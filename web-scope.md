@@ -3,8 +3,7 @@
 **Project:** Shi3ld Alliance Website  
 **Primary Revenue Streams:** Ecommerce and Physical Cleaning Services  
 **Proposal Type:** Business, Functional and Technical Website Scope  
-**Prepared:** September 2026  
-**Commercial Costings:** Intentionally excluded  
+**Prepared:** September 2026   
 
 ---
 
