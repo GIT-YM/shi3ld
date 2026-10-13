@@ -1,6 +1,6 @@
 <?php
 
-$siteUrl = rtrim((string) env('SHOP_URL', 'https://shi3ld.rpidevserver'), '/');
+$siteUrl = rtrim((string) env('SHOP_URL', env('APP_URL', 'http://localhost')), '/');
 
 return [
     'enquiries_email' => env('ENQUIRIES_EMAIL', 'enquiries@example.test'),

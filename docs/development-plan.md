@@ -69,7 +69,7 @@ Not implemented yet: product catalogue import, payment/shipping configuration, s
 
 The user requested the public services site in Laravel at the eventual production path `www.shi3ldalliance.co.uk/services`, with development preview first and sample content for now. This updates the original Magento-CMS ownership for these service pages: Laravel now owns the public `/services` area and its editable service-page data; Magento owns commerce and the remaining public shop content.
 
-Implemented: responsive public services site, 16 editable service pages, structured enquiry journey, separate authorised staff login, enquiry inbox/filter/status/notes/CSV export, page content editing/publishing, service sitemap/metadata, and persistent notification delivery with scheduled retries. Preview: https://shi3ld.rpidevserver/services . Production has not been deployed. Original Phase 2 bookings, workforce/portals, payments and AI remain future work.
+Implemented: responsive public services site, 16 editable service pages, structured enquiry journey, separate authorised staff login, enquiry inbox/filter/status/notes/CSV export, page content editing/publishing, service sitemap/metadata, and persistent notification delivery with scheduled retries. Preview: https://<SITE_HOST>/services on each development server. Production has not been deployed. Original Phase 2 bookings, workforce/portals, payments and AI remain future work.
 
 ## Combined homepage integration — 12 October 2026
 

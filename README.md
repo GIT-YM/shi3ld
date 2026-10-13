@@ -6,8 +6,8 @@ Development stack: PHP 8.5 for both apps, Magento Open Source 2.4.9, Laravel 13,
 
 ## Start development
 
-1. Run `make env` to create local random credentials. `.env` and `.secrets/` are ignored by Git.
-2. Install mkcert, trust its local CA with `mkcert -install`, run `./bin/generate-development-cert`, then run `make build`. This server uses the same CA as CZ.
+1. Run `make env` to create local random credentials. `.env` and `.secrets/` are ignored by Git. It also sets `SITE_HOST=shi3ld.<this server's hostname>` (e.g. `shi3ld.gmkserver`, `shi3ld.rpidevserver`); check it, since every URL, the nginx `server_name` and the certificate come from it. Each developer's server keeps its own hostname in its own `.env`, so nothing committed names a server.
+2. Install mkcert, trust its local CA with `mkcert -install`, run `./bin/generate-development-cert` (it issues a certificate for `SITE_HOST` and reissues it if `SITE_HOST` changes), then run `make build`. Each server uses the same mkcert CA as CZ on that server.
 3. Run `docker compose up -d db laravel-cache mailpit`.
 4. Run `./bin/bootstrap-laravel` to install Laravel dependencies, generate its key and migrate its own database. Existing installs keep their existing application key; run the key command only for a new installation.
 5. Generate Magento Marketplace access keys at https://commercemarketplace.adobe.com/customer/accessKeys/ . Put them in `.secrets/composer-auth.json`:
@@ -20,17 +20,17 @@ Development stack: PHP 8.5 for both apps, Magento Open Source 2.4.9, Laravel 13,
 6. Run `./bin/bootstrap-magento` to download the official release, install Magento, enable project modules and configure search/cache.
 7. Run `make up`, then `make workers` once both apps are installed and migrated.
 
-Homepage: https://shi3ld.rpidevserver . Shop: https://shi3ld.rpidevserver/shop . Services: https://shi3ld.rpidevserver/services . Admin: https://shi3ld.rpidevserver/admin/ . HTTPS is published on port 443, with HTTP on port 80 redirecting to HTTPS. The old localhost ports 9080/9082 also redirect. Mailpit remains local at http://localhost:9085.
+Below, `<SITE_HOST>` is the value in your `.env`. Homepage: https://<SITE_HOST> . Shop: https://<SITE_HOST>/shop . Services: https://<SITE_HOST>/services . Admin: https://<SITE_HOST>/admin/ . HTTPS is published on port 443, with HTTP on port 80 redirecting to HTTPS. The old localhost ports 9080/9082 also redirect. Mailpit remains local at http://localhost:9085.
 
 On your browsing computer, point both hostnames to this server using your local DNS server or hosts file:
 
 ```text
-192.168.1.200 shi3ld.rpidevserver services.shi3ld.rpidevserver
+<server IP> <SITE_HOST> services.<SITE_HOST>
 ```
 
-Windows hosts file: `C:\Windows\System32\drivers\etc\hosts` (edit as Administrator). Linux/macOS: `/etc/hosts`. If CZ's SSL certificate is already trusted, this certificate uses the same CA. Otherwise, import this server's public `/home/kashw/.local/share/mkcert/rootCA.pem` into your computer's trusted certificate authorities. Never copy the CA private key. Certificates and private keys are ignored by Git. The server address is currently assigned by DHCP; reserve it on your router to keep this mapping stable.
+Windows hosts file: `C:\Windows\System32\drivers\etc\hosts` (edit as Administrator). Linux/macOS: `/etc/hosts`. If CZ's SSL certificate is already trusted, this certificate uses the same CA. Otherwise, import this server's public `$(mkcert -CAROOT)/rootCA.pem` into your computer's trusted certificate authorities. Never copy the CA private key. Certificates and private keys are ignored by Git. The server address is currently assigned by DHCP; reserve it on your router to keep this mapping stable.
 
-`./bin/configure-development-urls` applies Magento's secure storefront/admin URLs and clears the Laravel configuration cache. Laravel publishes secure session cookies. URL values are in root `.env`; hostname changes also require updating nginx and regenerating the certificate.
+`./bin/configure-development-urls` applies Magento's secure storefront/admin URLs and clears the Laravel configuration cache. Laravel publishes secure session cookies. URL values are in root `.env`. To change hostname, edit `SITE_HOST`, run `./bin/generate-development-cert`, recreate nginx (`docker compose up -d nginx`; its config is rendered from `docker/nginx/templates/default.conf.template` at start) and rerun this script.
 
 Magento admin user/password are in local `.env`; don't paste credentials into tickets. Two-factor authentication is temporarily disabled for development at the user's request (`Magento_TwoFactorAuth` and `Magento_AdminAdobeImsTwoFactorAuth`).
 
@@ -66,7 +66,7 @@ Runtime PHP containers mount only their own application directories. The nginx c
 
 ## Magento installation details
 
-Magento admin: https://shi3ld.rpidevserver/admin/ . Admin credentials remain in the local root `.env`, and two-factor authentication is temporarily disabled for development. Mailpit captures development messages at http://localhost:9085 . Native SMTP settings are stored in Magento's ignored `app/etc/env.php` using `bin/configure-magento-development`.
+Magento admin: https://<SITE_HOST>/admin/ . Admin credentials remain in the local root `.env`, and two-factor authentication is temporarily disabled for development. Mailpit captures development messages at http://localhost:9085 . Native SMTP settings are stored in Magento's ignored `app/etc/env.php` using `bin/configure-magento-development`.
 
 MySQL runs with `log_bin_trust_function_creators=1`, which permits Magento's indexing triggers without granting its database account global SUPER privileges. The installer checks the completed installation date so an interrupted install can resume without deleting its database.
 
@@ -76,13 +76,13 @@ Smoke checks completed: shop, domestic cleaning page and Laravel quote page retu
 
 ## Laravel services preview — 12 October 2026
 
-The public services site now runs at **https://shi3ld.rpidevserver/services**, using the same hostname as Magento. Nginx sends `/services` and its descendants to Laravel and serves `/services/assets/` from Laravel public files. Magento continues to serve the shop and `/admin/`. The previous services subdomain redirects to this path.
+The public services site now runs at **https://<SITE_HOST>/services**, using the same hostname as Magento. Nginx sends `/services` and its descendants to Laravel and serves `/services/assets/` from Laravel public files. Magento continues to serve the shop and `/admin/`. The previous services subdomain redirects to this path.
 
 The eventual production URL is `https://www.shi3ldalliance.co.uk/services`. No production DNS or hosting was changed. On deployment, set `SERVICES_URL` to the origin `https://www.shi3ldalliance.co.uk` (without `/services`); Laravel routes already supply the prefix. Set `SHOP_URL` to the production shop origin, use a valid production TLS certificate, and carry over nginx's `/services` routing.
 
 Included: responsive services homepage; 16 editable service pages covering domestic/commercial/care-home categories and their cleaning options; process, coverage, FAQ, contact and sample gallery pages; privacy/cookie/terms drafts; structured quote form and confirmation; metadata, sharing tags and `/services/sitemap.xml`. The form includes conditional organisation/site details, property type, approximate size, rooms, schedule and contact preferences. File uploads are not collected.
 
-Staff area: **https://shi3ld.rpidevserver/services/staff**. Local login credentials are in `laravel/storage/app/private/services-staff.txt` (mode 600, ignored by Git). This account is separate from Magento admin. There is no public staff registration. Staff can filter/search enquiries, view details, update status/internal notes, export CSV and edit/publish/unpublish the service pages. Exports neutralise spreadsheet formula prefixes.
+Staff area: **https://<SITE_HOST>/services/staff**. Local login credentials are in `laravel/storage/app/private/services-staff.txt` (mode 600, ignored by Git). This account is separate from Magento admin. There is no public staff registration. Staff can filter/search enquiries, view details, update status/internal notes, export CSV and edit/publish/unpublish the service pages. Exports neutralise spreadsheet formula prefixes.
 
 `php artisan shi3ld:staff EMAIL` creates a staff user using a hidden password prompt; `--bootstrap --no-interaction` generates a private credential file only in the local environment. Existing users' credentials/permissions are preserved. `php artisan db:seed --class=ServicePageSeeder` adds missing sample pages and preserves existing edits. `php artisan shi3ld:deliver-enquiries` runs each minute through the scheduler, tracks acknowledgement/internal delivery separately and retries pending messages. All development mail is captured by Mailpit. Sessions use the separate `shi3ld_services_session` cookie scoped to `/services`; admin responses are private and not cached.
 

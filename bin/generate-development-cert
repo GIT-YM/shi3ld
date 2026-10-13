@@ -1,9 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+[ -f .env ] || { echo 'No .env: run bin/init-env first.' >&2; exit 1; }
+site_host=$(sed -n 's/^SITE_HOST=//p' .env | tail -n 1)
+[ -n "$site_host" ] || { echo 'Set SITE_HOST in .env (see .env.example).' >&2; exit 1; }
+cert=docker/nginx/certs/shi3ld.pem
+key=docker/nginx/certs/shi3ld-key.pem
 mkdir -p docker/nginx/certs
-if [ ! -f docker/nginx/certs/shi3ld.pem ] || [ ! -f docker/nginx/certs/shi3ld-key.pem ]; then
-  mkcert -cert-file docker/nginx/certs/shi3ld.pem -key-file docker/nginx/certs/shi3ld-key.pem \
-    shi3ld.rpidevserver services.shi3ld.rpidevserver localhost 127.0.0.1 ::1
+# Regenerate when missing, or when SITE_HOST has changed since the last run.
+if [ ! -f "$cert" ] || [ ! -f "$key" ] || ! openssl x509 -in "$cert" -noout -checkhost "$site_host" | grep -q 'does match'; then
+  mkcert -cert-file "$cert" -key-file "$key" \
+    "$site_host" "services.$site_host" localhost 127.0.0.1 ::1
 fi
-chmod 600 docker/nginx/certs/shi3ld-key.pem
+chmod 600 "$key"
