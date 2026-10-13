@@ -1,0 +1,17 @@
+/.env
+/.secrets/
+/docker/nginx/certs/
+/.bootstrap-*/
+/backups/
+**/vendor/
+**/node_modules/
+**/auth.json
+/magento/app/etc/env.php
+/magento/generated/*
+/magento/var/*
+/magento/pub/static/*
+/magento/pub/media/*
+/magento/pub/sitemap*.xml
+/laravel/.env
+/laravel/storage/*.key
+/laravel/storage/app/private/

@@ -1,0 +1,566 @@
+[
+  {
+    "slug": "domestic-cleaning",
+    "category": "domestic",
+    "title": "Domestic cleaning",
+    "eyebrow": "For your home",
+    "summary": "A little more breathing room. Cleaning plans for your home, your routine and the things that matter to you.",
+    "description": "A little more breathing room. Cleaning plans for your home, your routine and the things that matter to you. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Accessible surfaces and general dusting",
+      "Kitchen surfaces and cupboard fronts",
+      "Bathroom basins, baths and showers",
+      "Vacuuming and suitable floor care",
+      "An agreed room-by-room checklist"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "commercial-cleaning",
+    "category": "commercial",
+    "title": "Commercial cleaning",
+    "eyebrow": "For your business",
+    "summary": "A welcoming place to work. Cleaning plans shaped around your premises, people and working hours.",
+    "description": "A welcoming place to work. Cleaning plans shaped around your premises, people and working hours. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Office and shared workspace cleaning",
+      "Reception and communal areas",
+      "Washroom cleaning",
+      "Kitchen and break-room surfaces",
+      "Agreed touchpoint and floor-cleaning schedules"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share the site layout, approximate size, opening hours, access arrangements and any contractor requirements. A site discussion or visit may be needed before a quotation.",
+    "frequency": "Recurring contracts, one-off visits and bespoke schedules, agreed around your site.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "care-home-cleaning",
+    "category": "care_home",
+    "title": "Care-home cleaning",
+    "eyebrow": "For care environments",
+    "summary": "Thoughtful cleaning plans for shared living environments, discussed directly with your care-home team.",
+    "description": "Care environments need a clear scope, considered working arrangements and coordination with the people responsible for the home. Discuss your cleaning priorities, timing and site procedures with us before requesting a detailed proposal. Workforce checks, supervision, chemical information and relevant documentation must be confirmed for the proposed work.",
+    "tasks": [
+      "Communal lounges and corridors",
+      "Dining areas and shared spaces",
+      "Bathrooms and agreed washroom areas",
+      "Resident rooms where agreed with the home",
+      "Defined high-touch surfaces"
+    ],
+    "extras": [
+      "Site-specific cleaning checklists",
+      "Documentation and supervision requirements",
+      "Additional rooms or areas agreed with the home"
+    ],
+    "preparation": "A manager should identify the areas in scope, site procedures and suitable working times. Please keep resident names, health details and other sensitive information out of the public enquiry form.",
+    "frequency": "Scheduled, recurring or one-off work, subject to an agreed site plan.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "regular-cleaning",
+    "category": "domestic",
+    "title": "Regular cleaning",
+    "eyebrow": "For your home",
+    "summary": "Keep the everyday cleaning on a manageable routine.",
+    "description": "Keep the everyday cleaning on a manageable routine. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Dusting accessible surfaces",
+      "Kitchen and bathroom cleaning",
+      "Vacuuming and floor care",
+      "A repeatable checklist tailored to your home"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "one-off-cleaning",
+    "category": "domestic",
+    "title": "One-off cleaning",
+    "eyebrow": "For your home",
+    "summary": "An extra helping hand when your home needs some attention.",
+    "description": "An extra helping hand when your home needs some attention. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "An agreed room-by-room clean",
+      "Kitchen and bathroom surfaces",
+      "Floors and accessible fixtures",
+      "Priority areas identified before the visit"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "deep-cleaning",
+    "category": "domestic",
+    "title": "Deep cleaning",
+    "eyebrow": "For your home",
+    "summary": "More focused attention for the areas that need it.",
+    "description": "More focused attention for the areas that need it. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Detailed accessible surface cleaning",
+      "Kitchen grease and bathroom build-up, where suitable",
+      "Skirting boards and accessible fixtures",
+      "A tailored list of priority tasks"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "end-of-tenancy-cleaning",
+    "category": "domestic",
+    "title": "End-of-tenancy cleaning",
+    "eyebrow": "For your home",
+    "summary": "Plan a clear cleaning scope before handing over your property.",
+    "description": "Plan a clear cleaning scope before handing over your property. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Agreed kitchen and bathroom cleaning",
+      "Empty cupboard interiors where included",
+      "Accessible fixtures and surfaces",
+      "Suitable floor cleaning"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "kitchen-cleaning",
+    "category": "domestic",
+    "title": "Kitchen cleaning",
+    "eyebrow": "For your home",
+    "summary": "A practical refresh for the heart of your home.",
+    "description": "A practical refresh for the heart of your home. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Worktops and accessible surfaces",
+      "Sink and taps",
+      "Cupboard fronts and splashbacks",
+      "Suitable kitchen-floor cleaning"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "bathroom-cleaning",
+    "category": "domestic",
+    "title": "Bathroom cleaning",
+    "eyebrow": "For your home",
+    "summary": "Focused attention for bathrooms, showers and washrooms.",
+    "description": "Focused attention for bathrooms, showers and washrooms. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Basins, taps and suitable fixtures",
+      "Bath and shower surfaces",
+      "Accessible tiles and mirrors",
+      "Toilet and bathroom-floor cleaning"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "bespoke-cleaning",
+    "category": "domestic",
+    "title": "Bespoke home cleaning",
+    "eyebrow": "For your home",
+    "summary": "Build a cleaning checklist around your own priorities.",
+    "description": "Build a cleaning checklist around your own priorities. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "A discussion of your rooms and priorities",
+      "A clearly agreed task list",
+      "Suitable cleaning methods for your surfaces",
+      "Frequency and timing agreed with you"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Let us know about access, parking, delicate surfaces and any areas that need special attention. Clear personal belongings from the areas to be cleaned. Equipment and product arrangements will be confirmed before the visit.",
+    "frequency": "One-off, weekly, fortnightly or monthly, subject to availability.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "office-cleaning",
+    "category": "commercial",
+    "title": "Office cleaning",
+    "eyebrow": "For your business",
+    "summary": "Help keep shared workspaces ready for the working day.",
+    "description": "Help keep shared workspaces ready for the working day. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Accessible desks and meeting-room surfaces",
+      "Reception and shared spaces",
+      "Washrooms and staff kitchens",
+      "Suitable floor care"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "retail-cleaning",
+    "category": "commercial",
+    "title": "Retail cleaning",
+    "eyebrow": "For your business",
+    "summary": "Cleaning plans for customer-facing spaces and staff areas.",
+    "description": "Cleaning plans for customer-facing spaces and staff areas. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Accessible shop-floor surfaces",
+      "Customer entrances and shared areas",
+      "Staff rooms and washrooms",
+      "Suitable floors and agreed fixtures"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "communal-area-cleaning",
+    "category": "commercial",
+    "title": "Communal area cleaning",
+    "eyebrow": "For your business",
+    "summary": "A clear cleaning routine for the spaces people share.",
+    "description": "A clear cleaning routine for the spaces people share. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Entrances and lobbies",
+      "Corridors and accessible stairs",
+      "Shared touchpoints",
+      "Suitable flooring and surfaces"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "industrial-commercial-cleaning",
+    "category": "commercial",
+    "title": "Industrial and commercial premises",
+    "eyebrow": "For your business",
+    "summary": "Discuss a site-specific cleaning plan for your working environment.",
+    "description": "Discuss a site-specific cleaning plan for your working environment. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Agreed general-purpose areas",
+      "Staff facilities and washrooms",
+      "Accessible common surfaces",
+      "Tasks suitable for your site and risk arrangements"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "contract-cleaning",
+    "category": "commercial",
+    "title": "Contract cleaning",
+    "eyebrow": "For your business",
+    "summary": "A recurring cleaning plan with an agreed scope and schedule.",
+    "description": "A recurring cleaning plan with an agreed scope and schedule. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Defined areas and cleaning tasks",
+      "Agreed visit frequency",
+      "A named contact arrangement",
+      "Review points for changes to requirements"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  },
+  {
+    "slug": "bespoke-commercial-cleaning",
+    "category": "commercial",
+    "title": "Bespoke commercial schedules",
+    "eyebrow": "For your business",
+    "summary": "Shape a cleaning plan around the way your business operates.",
+    "description": "Shape a cleaning plan around the way your business operates. Tell us about the space and your priorities so we can discuss a practical cleaning plan. The final task list and any exclusions are agreed with your quotation.",
+    "tasks": [
+      "Site requirements and priority areas",
+      "Frequency and access planning",
+      "A tailored cleaning checklist",
+      "Additional tasks agreed before work starts"
+    ],
+    "extras": [
+      "Additional rooms or areas, agreed in advance",
+      "Product or equipment preferences, discussed before quoting"
+    ],
+    "preparation": "Share your site type, approximate size, working hours, access requirements and preferred schedule. Any site restrictions or risk requirements should be discussed before a quotation.",
+    "frequency": "One-off, recurring or a bespoke schedule, subject to agreement.",
+    "faqs": [
+      {
+        "question": "How is the price calculated?",
+        "answer": "The quotation is based on the areas, condition, frequency and agreed tasks. Send your requirements so the team can discuss a scope and price."
+      },
+      {
+        "question": "Can I add extra tasks?",
+        "answer": "Include additional tasks in your enquiry. Suitability, equipment, timing and any extra charges will be confirmed before the work is agreed."
+      },
+      {
+        "question": "Do you cover my postcode?",
+        "answer": "Include your postcode in the quote form. The team will confirm service coverage and available dates."
+      }
+    ],
+    "published": true
+  }
+]

@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+python3 - <<'CHECK'
+import json
+from pathlib import Path
+p=Path('.secrets/composer-auth.json')
+a=json.loads(p.read_text()) if p.exists() else {}
+k=a.get('http-basic', {}).get('repo.magento.com', {})
+if not k.get('username') or not k.get('password'):
+    raise SystemExit('Add Marketplace keys to .secrets/composer-auth.json first. See README.md.')
+CHECK
+if [ ! -f magento/bin/magento ]; then
+  docker compose run --rm --no-deps --workdir /workspace magento-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .bootstrap-magento 2.4.9 --no-interaction
+  cp -a .bootstrap-magento/. magento/
+fi
+./bin/sync-site-assets
+./bin/configure-magento-composer
+if [ ! -f magento/vendor/autoload.php ]; then
+  docker compose run --rm --no-deps magento-composer install --no-interaction
+fi
+# Keep Magento's maintained PHP execution, static and media security rules.
+cp magento/nginx.conf.sample docker/nginx/magento.conf
+docker compose up -d db opensearch magento-cache
+docker compose run --rm --no-deps php-magento php bin/shi3ld-apply-patches.php
+if ! docker compose run --rm --no-deps php-magento php -r '$c = is_file("app/etc/env.php") ? require "app/etc/env.php" : []; exit(empty($c["install"]["date"]) ? 1 : 0);'; then
+  docker compose run --rm php-magento sh -c '
+    php bin/magento setup:install \
+      --base-url="${SHOP_URL}/" --base-url-secure="${SHOP_URL}/" --use-secure=1 --use-secure-admin=1 --backend-frontname=admin \
+      --db-host=db --db-name=magento --db-user=magento --db-password="$MAGENTO_DB_PASSWORD" \
+      --admin-firstname=Shi3ld --admin-lastname=Admin --admin-email="$MAGENTO_ADMIN_EMAIL" \
+      --admin-user="$MAGENTO_ADMIN_USER" --admin-password="$MAGENTO_ADMIN_PASSWORD" \
+      --language=en_GB --currency=GBP --timezone=Europe/London --use-rewrites=1 \
+      --search-engine=opensearch --opensearch-host=opensearch --opensearch-port=9200 \
+      --cache-backend=valkey --cache-backend-valkey-server=magento-cache --cache-backend-valkey-db=0 \
+      --page-cache=valkey --page-cache-valkey-server=magento-cache --page-cache-valkey-db=1 \
+      --session-save=valkey --session-save-valkey-host=magento-cache --session-save-valkey-db=2
+  '
+fi
+docker compose run --rm php-magento php bin/magento module:enable Shi3ld_Catalog Shi3ld_Content Shi3ld_Integration
+docker compose run --rm php-magento php bin/magento setup:upgrade
+docker compose run --rm php-magento php bin/magento setup:db-declaration:generate-whitelist --module-name=Shi3ld_Integration
+docker compose run --rm php-magento php bin/magento shi3ld:theme:activate
+docker compose run --rm php-magento php bin/magento deploy:mode:set developer
+docker compose run --rm php-magento php bin/magento indexer:reindex
+docker compose up -d php-magento php-laravel nginx
+docker compose exec -T nginx nginx -s reload
+./bin/configure-magento-development
+./bin/configure-development-urls
+docker compose exec -T php-magento php bin/magento shi3ld:site:sitemaps

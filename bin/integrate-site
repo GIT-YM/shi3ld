@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+./bin/sync-site-assets
+docker compose exec -T php-magento php bin/magento setup:upgrade
+docker compose exec -T php-magento php bin/magento shi3ld:theme:activate
+docker compose exec -T php-magento php bin/magento shi3ld:site:sitemaps
+docker compose exec -T php-magento php bin/magento cache:clean config layout block_html full_page
+docker compose exec -T php-laravel php artisan config:clear --no-interaction
+docker compose exec -T php-laravel php artisan view:cache --no-interaction
+docker compose exec -T nginx nginx -t
+docker compose exec -T nginx nginx -s reload

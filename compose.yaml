@@ -1,0 +1,170 @@
+name: ${COMPOSE_PROJECT_NAME:-shi3ld}
+x-magento: &magento
+  image: shi3ld-magento:dev
+  build:
+    context: .
+    dockerfile: docker/php/Dockerfile
+    target: magento
+    args:
+      PHP_VERSION: ${PHP_VERSION:-8.5}
+      LOCAL_UID: ${LOCAL_UID:-1000}
+      LOCAL_GID: ${LOCAL_GID:-1000}
+  volumes:
+    - ./magento:/workspace/magento
+  environment:
+    MAGENTO_DB_PASSWORD: ${MAGENTO_DB_PASSWORD:?Run bin/init-env}
+    MAGENTO_ADMIN_USER: ${MAGENTO_ADMIN_USER:-shi3ld_admin}
+    MAGENTO_ADMIN_PASSWORD: ${MAGENTO_ADMIN_PASSWORD:?Run bin/init-env}
+    MAGENTO_ADMIN_EMAIL: ${MAGENTO_ADMIN_EMAIL:-admin@example.test}
+    SHOP_PORT: ${SHOP_PORT:-9080}
+    SHOP_URL: ${SHOP_URL:-https://shi3ld.rpidevserver}
+  depends_on:
+    db: {condition: service_healthy}
+    opensearch: {condition: service_healthy}
+x-laravel: &laravel
+  image: shi3ld-laravel:dev
+  build:
+    context: .
+    dockerfile: docker/php/Dockerfile
+    target: laravel
+    args:
+      PHP_VERSION: ${PHP_VERSION:-8.5}
+      LOCAL_UID: ${LOCAL_UID:-1000}
+      LOCAL_GID: ${LOCAL_GID:-1000}
+  volumes:
+    - ./laravel:/workspace/laravel
+  environment:
+    DB_CONNECTION: mysql
+    DB_HOST: db
+    DB_DATABASE: laravel
+    DB_USERNAME: laravel
+    DB_PASSWORD: ${LARAVEL_DB_PASSWORD:?Run bin/init-env}
+    MAGENTO_DB_HOST: db
+    MAGENTO_DB_DATABASE: magento
+    MAGENTO_DB_USERNAME: magento_read
+    MAGENTO_DB_PASSWORD: ${MAGENTO_READ_PASSWORD:?Run bin/init-env}
+    REDIS_CLIENT: predis
+    REDIS_HOST: laravel-cache
+    QUEUE_CONNECTION: redis
+    CACHE_STORE: redis
+    SESSION_DRIVER: database
+    MAIL_MAILER: smtp
+    MAIL_HOST: mailpit
+    MAIL_PORT: 1025
+    MAIL_FROM_ADDRESS: hello@example.test
+    MAIL_FROM_NAME: Shi3ld Alliance
+    APP_URL: ${SERVICES_URL:-https://shi3ld.rpidevserver}
+    SHOP_URL: ${SHOP_URL:-https://shi3ld.rpidevserver}
+    SESSION_SECURE_COOKIE: 'true'
+    SESSION_COOKIE: shi3ld_services_session
+    SESSION_PATH: /services
+    MAGENTO_BASE_URL: http://nginx:8080
+  depends_on:
+    db: {condition: service_healthy}
+    laravel-cache: {condition: service_healthy}
+services:
+  db:
+    image: mysql:8.4
+    command: [--log-bin-trust-function-creators=1]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run bin/init-env}
+      MAGENTO_DB_PASSWORD: ${MAGENTO_DB_PASSWORD}
+      LARAVEL_DB_PASSWORD: ${LARAVEL_DB_PASSWORD}
+      MAGENTO_READ_PASSWORD: ${MAGENTO_READ_PASSWORD}
+    volumes:
+      - database:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysql -uroot -e "SELECT 1" >/dev/null 2>&1']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    mem_limit: 1g
+  opensearch:
+    image: opensearchproject/opensearch:3
+    environment:
+      discovery.type: single-node
+      bootstrap.memory_lock: 'true'
+      DISABLE_INSTALL_DEMO_CONFIG: 'true'
+      DISABLE_SECURITY_PLUGIN: 'true'
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    ulimits:
+      memlock: {soft: -1, hard: -1}
+      nofile: {soft: 65536, hard: 65536}
+    volumes: [search:/usr/share/opensearch/data]
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://localhost:9200/_cluster/health >/dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    mem_limit: 1536m
+  magento-cache:
+    image: valkey/valkey:9-alpine
+    command: [valkey-server, --maxmemory, 256mb, --maxmemory-policy, noeviction]
+    mem_limit: 384m
+  laravel-cache:
+    image: valkey/valkey:9-alpine
+    command: [valkey-server, --appendonly, 'yes', --maxmemory, 256mb, --maxmemory-policy, noeviction]
+    volumes: [laravel-cache:/data]
+    healthcheck:
+      test: [CMD, valkey-cli, ping]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    mem_limit: 384m
+  php-magento:
+    <<: *magento
+  magento-composer:
+    <<: *magento
+    profiles: [tools]
+    entrypoint: [composer]
+    volumes:
+      - .:/workspace
+    secrets:
+      - source: magento_auth
+        target: /tmp/composer/auth.json
+  magento-cron:
+    <<: *magento
+    profiles: [workers]
+    command: [sh, -c, 'while true; do php bin/magento cron:run; sleep 60; done']
+  php-laravel:
+    <<: *laravel
+  laravel-composer:
+    <<: *laravel
+    profiles: [tools]
+    entrypoint: [composer]
+    volumes:
+      - .:/workspace
+  laravel-queue:
+    <<: *laravel
+    profiles: [workers]
+    command: [php, artisan, queue:work, --sleep=3, --tries=3, --timeout=90]
+  laravel-scheduler:
+    <<: *laravel
+    profiles: [workers]
+    command: [php, artisan, schedule:work]
+  nginx:
+    image: nginx:1.30-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+      - '127.0.0.1:${SHOP_PORT:-9080}:80'
+      - '127.0.0.1:${SERVICES_PORT:-9082}:82'
+    volumes:
+      - ./magento:/workspace/magento:ro
+      - ./laravel/public:/workspace/laravel/public:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/nginx/magento.conf:/etc/nginx/magento.conf:ro
+      - ./docker/nginx/laravel-services.conf:/etc/nginx/laravel-services.conf:ro
+      - ./docker/nginx/certs:/etc/nginx/certs:ro
+    depends_on: [php-magento, php-laravel]
+  mailpit:
+    image: axllent/mailpit:v1.29
+    ports: ['127.0.0.1:${MAIL_PORT:-9085}:8025']
+volumes:
+  database:
+  search:
+  laravel-cache:
+secrets:
+  magento_auth:
+    file: ./.secrets/composer-auth.json

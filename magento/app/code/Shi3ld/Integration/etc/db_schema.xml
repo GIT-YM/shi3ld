@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+  <table name="shi3ld_integration_outbox" resource="default" engine="innodb" comment="Shi3ld Integration Outbox">
+    <column xsi:type="bigint" name="entity_id" unsigned="true" nullable="false" identity="true"/>
+    <column xsi:type="varchar" name="event_id" length="36" nullable="false"/>
+    <column xsi:type="varchar" name="event_type" length="128" nullable="false"/>
+    <column xsi:type="text" name="payload" nullable="false"/>
+    <column xsi:type="varchar" name="status" length="20" nullable="false" default="pending"/>
+    <column xsi:type="int" name="attempts" unsigned="true" nullable="false" default="0"/>
+    <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"/>
+    <column xsi:type="timestamp" name="available_at" nullable="false" default="CURRENT_TIMESTAMP"/>
+    <column xsi:type="timestamp" name="delivered_at" nullable="true"/>
+    <column xsi:type="text" name="last_error" nullable="true"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY"><column name="entity_id"/></constraint>
+    <constraint xsi:type="unique" referenceId="SHI3LD_OUTBOX_EVENT_ID"><column name="event_id"/></constraint>
+    <index referenceId="SHI3LD_OUTBOX_STATUS_AVAILABLE" indexType="btree"><column name="status"/><column name="available_at"/></index>
+  </table>
+</schema>

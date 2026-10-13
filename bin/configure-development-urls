@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+docker compose exec -T php-magento sh -c '
+  set -e
+  php bin/magento config:set --lock-env web/unsecure/base_url "${SHOP_URL}/"
+  php bin/magento config:set --lock-env web/secure/base_url "${SHOP_URL}/"
+  php bin/magento config:set --lock-env web/secure/use_in_frontend 1
+  php bin/magento config:set --lock-env web/secure/use_in_adminhtml 1
+  php bin/magento cache:clean config full_page block_html
+'
+docker compose exec -T php-laravel php artisan config:clear --no-interaction

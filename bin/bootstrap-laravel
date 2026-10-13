@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [ ! -f laravel/artisan ]; then
+  docker compose run --rm --no-deps --workdir /workspace laravel-composer create-project laravel/laravel .bootstrap-laravel '^13.0' --no-interaction --no-scripts
+  cp -a .bootstrap-laravel/. laravel/
+fi
+if [ ! -f laravel/.env ]; then cp laravel/.env.example laravel/.env; chmod 600 laravel/.env; fi
+./bin/configure-laravel
+docker compose run --rm --no-deps php-laravel composer require predis/predis --no-interaction
+docker compose run --rm --no-deps php-laravel composer require laravel/boost --dev --no-interaction
+if ! grep -q '^APP_KEY=base64:' laravel/.env; then
+  docker compose run --rm --no-deps php-laravel php artisan key:generate --no-interaction
+fi
+docker compose run --rm php-laravel php artisan migrate --database=mysql --no-interaction
+docker compose run --rm php-laravel php artisan db:seed --class=ServicePageSeeder --no-interaction
+docker compose run --rm --no-deps php-laravel php artisan boost:install --guidelines --no-interaction

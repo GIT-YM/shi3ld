@@ -1,0 +1,19 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<a class="skip-link" href="#contentarea">Skip to content</a>
+<div class="preview-bar">Development preview · Sample copy and imagery · Please use sample enquiry details.</div>
+<div class="utility-bar"><div class="container"><span>Accessibility products · Cleaning services</span><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'shop'])) ?>">Explore accessibility products ↗</a></div></div>
+<div class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="<?= $block->escapeUrl($block->getUrl('')) ?>" aria-label="Shi3ld Alliance home"><svg aria-hidden="true" viewBox="0 0 42 46"><path d="M4 4h34v20c0 10-17 18-17 18S4 34 4 24Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 14h18M12 21h18M12 28h11" stroke="currentColor" stroke-width="3"/></svg><span>SHI3LD <span class="brand-small">ALLIANCE</span></span></a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu <span aria-hidden="true">☰</span></button>
+        <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+            <a href="<?= $block->escapeUrl($block->getUrl('')) ?>">Home</a>
+            <a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'shop'])) ?>">Shop</a>
+            <a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'services'])) ?>">Services</a>
+            <a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'about'])) ?>">About</a>
+            <a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'account'])) ?>">Account</a>
+            <a class="button button-small" href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'services/quote'])) ?>">Request a quote ↗</a>
+        </nav>
+    </div>
+</div>
+<div class="commerce-tools container"><details class="commerce-search"><summary>Search products</summary><?= $block->getChildHtml('search') ?></details><div class="commerce-basket"><?= $block->getChildHtml('minicart') ?></div></div>

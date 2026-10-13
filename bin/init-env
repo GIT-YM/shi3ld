@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import os, secrets
+root = Path(__file__).resolve().parent.parent
+path = root / '.env'
+if not path.exists():
+    text = (root / '.env.example').read_text()
+    text = text.replace('LOCAL_UID=1000', f'LOCAL_UID={os.getuid()}').replace('LOCAL_GID=1000', f'LOCAL_GID={os.getgid()}')
+    for key in ['MYSQL_ROOT_PASSWORD', 'MAGENTO_DB_PASSWORD', 'LARAVEL_DB_PASSWORD', 'MAGENTO_READ_PASSWORD', 'MAGENTO_ADMIN_PASSWORD']:
+        lines = text.splitlines()
+        text = '\n'.join(f'{key}={secrets.token_hex(24)}' if line.startswith(key + '=') else line for line in lines) + '\n'
+    path.write_text(text)
+    path.chmod(0o600)
+secret = root / '.secrets/composer-auth.json'
+secret.parent.mkdir(mode=0o700, exist_ok=True)
+if not secret.exists():
+    secret.write_text('{}\n')
+    secret.chmod(0o600)
+print('Local environment ready; secrets are excluded from Git.')

@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+theme=magento/app/design/frontend/Shi3ld/Alliance/web
+mkdir -p "$theme/css" "$theme/js" "$theme/images"
+cp laravel/public/services/assets/site.css "$theme/css/shi3ld-site.css"
+cp laravel/public/services/assets/site.js "$theme/js/shi3ld-site.js"
+cp laravel/public/services/assets/home-sample.jpg "$theme/images/home-sample.jpg"
+cp laravel/public/services/assets/workplace-sample.jpg "$theme/images/workplace-sample.jpg"
+cp laravel/public/services/assets/care-sample.jpg "$theme/images/care-sample.jpg"

@@ -1,0 +1,9 @@
+.git
+.env
+.secrets
+**/vendor
+**/node_modules
+magento
+laravel
+backups
+.bootstrap-*

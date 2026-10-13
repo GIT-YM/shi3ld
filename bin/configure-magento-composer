@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json
+path = Path(__file__).resolve().parent.parent / 'magento/composer.json'
+config = json.loads(path.read_text())
+scripts = config.setdefault('scripts', {})
+for event in ['post-install-cmd', 'post-update-cmd']:
+    entries = scripts.get(event, [])
+    if isinstance(entries, str):
+        entries = [entries]
+    command = '@php bin/shi3ld-apply-patches.php'
+    if command not in entries:
+        entries.append(command)
+    scripts[event] = entries
+path.write_text(json.dumps(config, indent=4) + '\n')
+print('Registered Adobe hotfix Composer hooks.')

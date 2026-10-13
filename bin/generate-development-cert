@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+mkdir -p docker/nginx/certs
+if [ ! -f docker/nginx/certs/shi3ld.pem ] || [ ! -f docker/nginx/certs/shi3ld-key.pem ]; then
+  mkcert -cert-file docker/nginx/certs/shi3ld.pem -key-file docker/nginx/certs/shi3ld-key.pem \
+    shi3ld.rpidevserver services.shi3ld.rpidevserver localhost 127.0.0.1 ::1
+fi
+chmod 600 docker/nginx/certs/shi3ld-key.pem

@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+docker compose exec -T php-magento sh -c '
+  set -e
+  php bin/magento config:set --lock-env system/smtp/transport smtp
+  php bin/magento config:set --lock-env system/smtp/host mailpit
+  php bin/magento config:set --lock-env system/smtp/port 1025
+  php bin/magento config:set --lock-env system/smtp/auth none
+  php bin/magento config:set --lock-env system/smtp/ssl none
+  php bin/magento config:set --lock-env system/smtp/set_return_path 0
+  php bin/magento config:set --lock-env trans_email/ident_general/email hello@example.test
+  php bin/magento config:set --lock-env trans_email/ident_general/name "Shi3ld Alliance"
+  php bin/magento config:set --lock-env general/store_information/name "Shi3ld Alliance"
+  php bin/magento config:set --lock-env design/header/logo_alt "Shi3ld Alliance"
+  php bin/magento config:set --lock-env design/search_engine_robots/default_robots NOINDEX,NOFOLLOW
+  php bin/magento cache:clean config full_page
+'

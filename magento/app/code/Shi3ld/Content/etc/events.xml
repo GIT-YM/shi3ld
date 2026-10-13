@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="catalog_product_save_commit_after">
+        <observer name="shi3ld_refresh_catalogue_on_save" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
+    </event>
+    <event name="catalog_product_delete_commit_after">
+        <observer name="shi3ld_refresh_catalogue_on_delete" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
+    </event>
+</config>
