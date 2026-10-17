@@ -20,7 +20,7 @@ Development stack: PHP 8.5 for both apps, Magento Open Source 2.4.9, Laravel 13,
 6. Run `./bin/bootstrap-magento` to download the official release, install Magento, enable project modules and configure search/cache.
 7. Run `make up`, then `make workers` once both apps are installed and migrated.
 
-Below, `<SITE_HOST>` is the value in your `.env`. Homepage: https://<SITE_HOST> . Shop: https://<SITE_HOST>/shop . Services: https://<SITE_HOST>/services . Admin: https://<SITE_HOST>/admin/ . HTTPS is published on port 443, with HTTP on port 80 redirecting to HTTPS. The old localhost ports 9080/9082 also redirect. Mailpit remains local at http://localhost:9085.
+Below, `<SITE_HOST>` is the value in your `.env`. Homepage: https://<SITE_HOST> . Shop: https://<SITE_HOST>/shop . Services: https://<SITE_HOST>/services . Admin: https://<SITE_HOST>/admin/ . HTTPS is published on port 443, with HTTP on port 80 redirecting to HTTPS. To share the server with other sites, set `HTTPS_PORT` (and `HTTP_PORT`) in `.env`, add the port to `SHOP_URL` and `SERVICES_URL` (for example `https://<SITE_HOST>:8448`), recreate nginx (`docker compose up -d nginx`) and run `./bin/configure-development-urls`; the site is then at `https://<SITE_HOST>:8448`. The old localhost ports 9080/9082 also redirect. Mailpit remains local at http://localhost:9085.
 
 On your browsing computer, point both hostnames to this server using your local DNS server or hosts file:
 

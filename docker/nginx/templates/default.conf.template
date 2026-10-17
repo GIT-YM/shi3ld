@@ -1,5 +1,6 @@
-# Rendered at container start by the nginx image (envsubst). Only ${SITE_HOST}
-# is substituted (NGINX_ENVSUBST_FILTER in compose.yaml); set it in the root .env.
+# Rendered at container start by the nginx image (envsubst). Only ${SITE_HOST} and
+# ${SHOP_URL} are substituted (NGINX_ENVSUBST_FILTER in compose.yaml); set them in the
+# root .env. Redirects use ${SHOP_URL} so a non-default HTTPS_PORT carries through.
 resolver 127.0.0.11 valid=10s ipv6=off;
 # This map is cached at the first rewrite pass, before Magento rewrites to
 # index.php. Use the normalized URI so traversal cannot borrow an exempt path.
@@ -35,13 +36,13 @@ server {
 server {
     listen 80;
     server_name ${SITE_HOST};
-    return 301 https://${SITE_HOST}$request_uri;
+    return 301 ${SHOP_URL}$request_uri;
 }
 server {
     listen 80;
     listen 82;
     server_name services.${SITE_HOST};
-    return 301 https://${SITE_HOST}$services_redirect_path;
+    return 301 ${SHOP_URL}$services_redirect_path;
 }
 server {
     listen 443 ssl;
@@ -94,24 +95,24 @@ server {
         fastcgi_pass fastcgi_backend;
     }
     include /etc/nginx/laravel-services.conf;
-    location = /home/ { return 301 https://${SITE_HOST}/$is_args$args; }
-    location = /shi3ld-home/ { return 301 https://${SITE_HOST}/$is_args$args; }
-    location = /about/ { return 301 https://${SITE_HOST}/about$is_args$args; }
-    location = /about-us/ { return 301 https://${SITE_HOST}/about$is_args$args; }
-    location = /services/about/ { return 301 https://${SITE_HOST}/about$is_args$args; }
-    location = /account/ { return 301 https://${SITE_HOST}/customer/account/$is_args$args; }
-    location = /domestic-cleaning/ { return 301 https://${SITE_HOST}/services/domestic-cleaning$is_args$args; }
-    location = /commercial-cleaning/ { return 301 https://${SITE_HOST}/services/commercial-cleaning$is_args$args; }
-    location = /care-home-cleaning/ { return 301 https://${SITE_HOST}/services/care-home-cleaning$is_args$args; }
-    location = /home { return 301 https://${SITE_HOST}/$is_args$args; }
-    location = /shi3ld-home { return 301 https://${SITE_HOST}/$is_args$args; }
-    location = /shop/ { return 301 https://${SITE_HOST}/shop$is_args$args; }
-    location = /about-us { return 301 https://${SITE_HOST}/about$is_args$args; }
-    location = /services/about { return 301 https://${SITE_HOST}/about$is_args$args; }
-    location = /account { return 301 https://${SITE_HOST}/customer/account/$is_args$args; }
-    location = /domestic-cleaning { return 301 https://${SITE_HOST}/services/domestic-cleaning$is_args$args; }
-    location = /commercial-cleaning { return 301 https://${SITE_HOST}/services/commercial-cleaning$is_args$args; }
-    location = /care-home-cleaning { return 301 https://${SITE_HOST}/services/care-home-cleaning$is_args$args; }
+    location = /home/ { return 301 ${SHOP_URL}/$is_args$args; }
+    location = /shi3ld-home/ { return 301 ${SHOP_URL}/$is_args$args; }
+    location = /about/ { return 301 ${SHOP_URL}/about$is_args$args; }
+    location = /about-us/ { return 301 ${SHOP_URL}/about$is_args$args; }
+    location = /services/about/ { return 301 ${SHOP_URL}/about$is_args$args; }
+    location = /account/ { return 301 ${SHOP_URL}/customer/account/$is_args$args; }
+    location = /domestic-cleaning/ { return 301 ${SHOP_URL}/services/domestic-cleaning$is_args$args; }
+    location = /commercial-cleaning/ { return 301 ${SHOP_URL}/services/commercial-cleaning$is_args$args; }
+    location = /care-home-cleaning/ { return 301 ${SHOP_URL}/services/care-home-cleaning$is_args$args; }
+    location = /home { return 301 ${SHOP_URL}/$is_args$args; }
+    location = /shi3ld-home { return 301 ${SHOP_URL}/$is_args$args; }
+    location = /shop/ { return 301 ${SHOP_URL}/shop$is_args$args; }
+    location = /about-us { return 301 ${SHOP_URL}/about$is_args$args; }
+    location = /services/about { return 301 ${SHOP_URL}/about$is_args$args; }
+    location = /account { return 301 ${SHOP_URL}/customer/account/$is_args$args; }
+    location = /domestic-cleaning { return 301 ${SHOP_URL}/services/domestic-cleaning$is_args$args; }
+    location = /commercial-cleaning { return 301 ${SHOP_URL}/services/commercial-cleaning$is_args$args; }
+    location = /care-home-cleaning { return 301 ${SHOP_URL}/services/care-home-cleaning$is_args$args; }
     include /etc/nginx/magento.conf;
 }
 server {
@@ -120,5 +121,5 @@ server {
     ssl_certificate /etc/nginx/certs/shi3ld.pem;
     ssl_certificate_key /etc/nginx/certs/shi3ld-key.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
-    return 301 https://${SITE_HOST}$services_redirect_path;
+    return 301 ${SHOP_URL}$services_redirect_path;
 }
