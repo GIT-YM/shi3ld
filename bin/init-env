@@ -7,7 +7,7 @@ if not path.exists():
     text = (root / '.env.example').read_text()
     text = text.replace('LOCAL_UID=1000', f'LOCAL_UID={os.getuid()}').replace('LOCAL_GID=1000', f'LOCAL_GID={os.getgid()}')
     text = text.replace('SITE_HOST=shi3ld.localhost', f'SITE_HOST=shi3ld.{socket.gethostname()}')
-    for key in ['MYSQL_ROOT_PASSWORD', 'MAGENTO_DB_PASSWORD', 'LARAVEL_DB_PASSWORD', 'MAGENTO_READ_PASSWORD', 'MAGENTO_ADMIN_PASSWORD']:
+    for key in ['MYSQL_ROOT_PASSWORD', 'MAGENTO_DB_PASSWORD', 'LARAVEL_DB_PASSWORD', 'MAGENTO_ADMIN_PASSWORD']:
         lines = text.splitlines()
         text = '\n'.join(f'{key}={secrets.token_hex(24)}' if line.startswith(key + '=') else line for line in lines) + '\n'
     path.write_text(text)

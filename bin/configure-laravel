@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 from pathlib import Path
 root = Path(__file__).resolve().parent.parent / 'laravel'
-p = root / 'bootstrap/providers.php'
-s = p.read_text()
-if 'Shi3ldServiceProvider' not in s:
-    s = s.replace('return [', 'return [\n    App\\Providers\\Shi3ldServiceProvider::class,', 1)
-p.write_text(s)
 p = root / 'routes/web.php'
 s = p.read_text()
 if "require __DIR__.'/shi3ld.php';" not in s:
     s += "\nrequire __DIR__.'/shi3ld.php';\n"
 p.write_text(s)
-print('Registered Shi3ld routes and read-only reporting connection.')
+print('Registered Shi3ld routes.')

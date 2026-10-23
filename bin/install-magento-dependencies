@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+docker compose run --rm --no-deps magento-composer install --no-interaction --prefer-dist
+# On existing checkouts Git removes old tracked core, but vendor may already exist.
+# Reinstall only the locked base package if its deployed entry points are missing.
+if [ ! -f magento/bin/magento ] || [ ! -f magento/app/bootstrap.php ] || [ ! -f magento/pub/index.php ] || [ ! -f magento/nginx.conf.sample ]; then
+  docker compose run --rm --no-deps magento-composer reinstall magento/magento2-base --no-interaction --prefer-dist
+fi

@@ -10,15 +10,10 @@ k=a.get('http-basic', {}).get('repo.magento.com', {})
 if not k.get('username') or not k.get('password'):
     raise SystemExit('Add Marketplace keys to .secrets/composer-auth.json first. See README.md.')
 CHECK
-if [ ! -f magento/bin/magento ]; then
-  docker compose run --rm --no-deps --workdir /workspace magento-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .bootstrap-magento 2.4.9 --no-interaction
-  cp -a .bootstrap-magento/. magento/
-fi
+# Composer deploys Magento's skeleton from the locked magento2-base package.
 ./bin/sync-site-assets
 ./bin/configure-magento-composer
-if [ ! -f magento/vendor/autoload.php ]; then
-  docker compose run --rm --no-deps magento-composer install --no-interaction
-fi
+./bin/install-magento-dependencies
 # Keep Magento's maintained PHP execution, static and media security rules.
 cp magento/nginx.conf.sample docker/nginx/magento.conf
 docker compose up -d db opensearch magento-cache

@@ -1,0 +1,43 @@
+name: Development checks
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main, 'feature/**', 'fix/**']
+
+permissions:
+  contents: read
+
+jobs:
+  laravel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo_sqlite, pdo_mysql, dom, xml, fileinfo
+          tools: composer:2.10
+          coverage: none
+      - name: Create a local example environment
+        working-directory: laravel
+        run: cp .env.example .env
+      - name: Install locked Laravel dependencies
+        working-directory: laravel
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Check PHP formatting
+        working-directory: laravel
+        run: vendor/bin/pint --test
+      - name: Run isolated Laravel tests
+        working-directory: laravel
+        run: php artisan test --compact --fail-on-warning --fail-on-risky
+      - name: Check shared assets
+        run: bin/sync-site-assets --check
+      - name: Check repository tracking
+        run: bin/check-repository
+      - name: Check shell syntax
+        run: bash -n bin/bootstrap-laravel bin/bootstrap-magento bin/install-magento-dependencies bin/integrate-site bin/retire-magento-reporting bin/sync-site-assets docker/mysql/init/01-databases.sh

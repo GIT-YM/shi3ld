@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import subprocess
+
+root = Path(__file__).resolve().parent.parent
+tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode().split('\0')
+allowed_files = {
+    'magento/composer.json', 'magento/composer.lock',
+    'magento/app/etc/config.php', 'magento/bin/shi3ld-apply-patches.php',
+}
+allowed_prefixes = ('magento/app/code/Shi3ld/', 'magento/app/design/frontend/Shi3ld/', 'magento/patches/')
+errors = []
+for name in filter(None, tracked):
+    parts = Path(name).parts
+    if name.startswith('magento/') and name not in allowed_files and not name.startswith(allowed_prefixes):
+        errors.append(name)
+    if '.secrets' in parts or 'vendor' in parts or 'node_modules' in parts or name in {'.env', 'laravel/.env'}:
+        errors.append(name)
+if errors:
+    raise SystemExit('Unexpected tracked files:\n' + '\n'.join(sorted(set(errors))))
+print('Repository tracking is clean.')

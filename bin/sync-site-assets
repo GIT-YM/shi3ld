@@ -2,6 +2,22 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 theme=magento/app/design/frontend/Shi3ld/Alliance/web
+if [ "${1:-}" = "--check" ]; then
+  status=0
+  for entry in "site.css:css/shi3ld-site.css" "site.js:js/shi3ld-site.js" "home-sample.jpg:images/home-sample.jpg" "workplace-sample.jpg:images/workplace-sample.jpg" "care-sample.jpg:images/care-sample.jpg"; do
+    source=${entry%%:*}
+    target=${entry#*:}
+    if ! cmp -s "laravel/public/services/assets/$source" "$theme/$target"; then
+      echo "Shared asset differs: $target. Run bin/sync-site-assets." >&2
+      status=1
+    fi
+  done
+  exit "$status"
+fi
+if [ "$#" -ne 0 ]; then
+  echo "Usage: bin/sync-site-assets [--check]" >&2
+  exit 2
+fi
 mkdir -p "$theme/css" "$theme/js" "$theme/images"
 cp laravel/public/services/assets/site.css "$theme/css/shi3ld-site.css"
 cp laravel/public/services/assets/site.js "$theme/js/shi3ld-site.js"

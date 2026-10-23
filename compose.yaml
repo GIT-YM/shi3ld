@@ -39,10 +39,6 @@ x-laravel: &laravel
     DB_DATABASE: laravel
     DB_USERNAME: laravel
     DB_PASSWORD: ${LARAVEL_DB_PASSWORD:?Run bin/init-env}
-    MAGENTO_DB_HOST: db
-    MAGENTO_DB_DATABASE: magento
-    MAGENTO_DB_USERNAME: magento_read
-    MAGENTO_DB_PASSWORD: ${MAGENTO_READ_PASSWORD:?Run bin/init-env}
     REDIS_CLIENT: predis
     REDIS_HOST: laravel-cache
     QUEUE_CONNECTION: redis
@@ -70,7 +66,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run bin/init-env}
       MAGENTO_DB_PASSWORD: ${MAGENTO_DB_PASSWORD}
       LARAVEL_DB_PASSWORD: ${LARAVEL_DB_PASSWORD}
-      MAGENTO_READ_PASSWORD: ${MAGENTO_READ_PASSWORD}
     volumes:
       - database:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
@@ -81,7 +76,7 @@ services:
       retries: 30
     mem_limit: 1g
   opensearch:
-    image: opensearchproject/opensearch:3
+    image: opensearchproject/opensearch:3@sha256:adfa61f85025d06b4aeb562e7e74fde7e31c437039c93c3862c17e9acebd6c7c
     environment:
       discovery.type: single-node
       bootstrap.memory_lock: 'true'
@@ -99,11 +94,11 @@ services:
       retries: 30
     mem_limit: 1536m
   magento-cache:
-    image: valkey/valkey:9-alpine
+    image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
     command: [valkey-server, --maxmemory, 256mb, --maxmemory-policy, noeviction]
     mem_limit: 384m
   laravel-cache:
-    image: valkey/valkey:9-alpine
+    image: valkey/valkey:9-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
     command: [valkey-server, --appendonly, 'yes', --maxmemory, 256mb, --maxmemory-policy, noeviction]
     volumes: [laravel-cache:/data]
     healthcheck:

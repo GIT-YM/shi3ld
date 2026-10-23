@@ -54,14 +54,16 @@ class ServicesAdminController extends Controller
         $query->when($filters['category'] ?? null, fn ($query, $category) => $query->where('service_type', $category));
         $query->when($filters['search'] ?? null, function ($query, $search): void {
             $query->where(function ($query) use ($search): void {
-                $query->where('reference', 'like', '%'.$search.'%')
-                    ->orWhere('name', 'like', '%'.$search.'%')
-                    ->orWhere('postcode', 'like', '%'.$search.'%');
+                $pattern = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search).'%';
+                $query->whereRaw("reference LIKE ? ESCAPE '!'", [$pattern])
+                    ->orWhereRaw("name LIKE ? ESCAPE '!'", [$pattern])
+                    ->orWhereRaw("postcode LIKE ? ESCAPE '!'", [$pattern]);
             });
         });
 
         return view('services.staff.index', [
             'enquiries' => $query->paginate(20)->withQueryString(),
+            'notificationFailures' => ServiceEnquiry::whereNotNull('customer_notification_failed_at')->orWhereNotNull('staff_notification_failed_at')->count(),
             'counts' => ServiceEnquiry::selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status'),
         ]);
     }

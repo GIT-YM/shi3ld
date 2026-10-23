@@ -50,7 +50,7 @@ Laravel 13.35.0 is installed with PHP 8.5.11 and Composer 2.10.3. Its MySQL migr
 
 Magento Open Source 2.4.9 is installed. Shi3ld_Catalog, Shi3ld_Content and Shi3ld_Integration are enabled, their data/schema patches have run, and the Shi3ld Alliance theme is activated. All 14 indexers were rebuilt and Magento reports its schema up to date. The outbox schema is a foundation; event capture, dispatcher retries, webhook authentication, deduplication and reconciliation remain future work. The Magento API client is prepared; authenticated API integration remains a later milestone.
 
-Before public launch, approve the privacy policy/retention rules, company contacts, branding, service coverage, quotation process and staff access. Customer/internal notification delivery is retried by the scheduler using persisted timestamps. Delivery is at least once: a process crash after SMTP accepts a message but before the timestamp is saved can cause a repeat acknowledgement. Outbound emails currently go to Mailpit.
+Before public launch, approve the privacy policy/retention rules, company contacts, branding, service coverage, quotation process and staff access. Customer/internal notification delivery is retried independently by the scheduler, up to five attempts, with 1, 5, 15 and 60 minute backoff. Failed delivery is flagged in the staff inbox and enquiry details. Delivery is at least once: a process crash after SMTP accepts a message but before the timestamp is saved can cause a repeat acknowledgement. Outbound emails currently go to Mailpit.
 
 To run only the Laravel services:
 
@@ -84,7 +84,7 @@ Included: responsive services homepage; 16 editable service pages covering domes
 
 Staff area: **https://<SITE_HOST>/services/staff**. Local login credentials are in `laravel/storage/app/private/services-staff.txt` (mode 600, ignored by Git). This account is separate from Magento admin. There is no public staff registration. Staff can filter/search enquiries, view details, update status/internal notes, export CSV and edit/publish/unpublish the service pages. Exports neutralise spreadsheet formula prefixes.
 
-`php artisan shi3ld:staff EMAIL` creates a staff user using a hidden password prompt; `--bootstrap --no-interaction` generates a private credential file only in the local environment. Existing users' credentials/permissions are preserved. `php artisan db:seed --class=ServicePageSeeder` adds missing sample pages and preserves existing edits. `php artisan shi3ld:deliver-enquiries` runs each minute through the scheduler, tracks acknowledgement/internal delivery separately and retries pending messages. All development mail is captured by Mailpit. Sessions use the separate `shi3ld_services_session` cookie scoped to `/services`; admin responses are private and not cached.
+`php artisan shi3ld:staff EMAIL` creates a staff user using a hidden password prompt; `--bootstrap --no-interaction` generates a private credential file only in the local environment. Existing users' credentials/permissions are preserved. `php artisan db:seed --class=ServicePageSeeder` adds missing sample pages and preserves existing edits. `php artisan shi3ld:deliver-enquiries` runs each minute through the scheduler, tracks acknowledgement/internal delivery separately, retries due messages with bounded backoff, and flags exhausted delivery for staff. All development mail is captured by Mailpit. Sessions use the separate `shi3ld_services_session` cookie scoped to `/services`; admin responses are private and not cached.
 
 Sample images were generated with the built-in imagegen tool and saved in `laravel/public/services/assets/`: `home-sample.jpg`, `workplace-sample.jpg`, `care-sample.jpg`. Source PNGs are retained alongside them. Prompt set: editorial natural-light photographs of a clean British living room with a cream sofa/oak table/plants; a tidy British workplace with oak meeting table/sage chairs/glass partitions; a welcoming empty care-setting communal lounge with high-backed sage/beige chairs and clear walkways. All prompts exclude people, text, logos and real client claims. The JPG delivery files total about 880 KB; image content was preserved during format optimisation.
 
@@ -111,3 +111,58 @@ Run `make integrate` after installing both apps to apply the CMS patch, activate
 `/sitemap.xml` is an index of native Magento `/sitemap_commerce.xml` and Laravel `/services/sitemap.xml`. Magento cron regenerates the index and commerce sitemap daily; `php bin/magento shi3ld:site:sitemaps` regenerates them manually. Development configuration sets Magento to `NOINDEX,NOFOLLOW`, matching Laravel's local preview. Review indexing, canonical URLs and sitemap discovery before production launch.
 
 `SHOP_URL` is the site origin, without `/shop`; `SERVICES_URL` is also the origin, without `/services`. Calendar, customer service profiles, shared authentication, catalogue import, payments and production deployment remain future milestones.
+
+## Review fixes — 14 October 2026
+
+- Laravel bootstrap uses `composer install` and preserves the lockfile and committed Boost instructions. Dependency upgrades are a deliberate, separate change.
+- Magento tracks only Composer manifests, project modules/theme, `app/etc/config.php` and the hotfix files. Composer deploys the remaining skeleton. Generated runtime files, including `pub/opt/`, are ignored.
+- The unused Magento reporting connection/user is removed. On an existing database volume, run `./bin/retire-magento-reporting`; new volumes create only the application database users. The API client remains unused scaffolding; any future reporting feature must define explicit access permissions.
+- OpenSearch and Valkey use image digests matching the development images inspected on 14 October. Update those digests deliberately on both servers.
+- Laravel owns the shared CSS/JS/images. Run `bin/sync-site-assets` after an asset change. CI runs `bin/sync-site-assets --check` and rejects drift.
+- Notifications stop after five delivery attempts per recipient channel and back off for 1, 5, 15 and 60 minutes. Failed delivery is shown to staff. An interrupted final attempt is flagged for review; SMTP delivery still has at-least-once semantics.
+
+### Team workflow
+
+Each developer sets their own identity locally; no identities or credentials are committed:
+
+```bash
+git config --local user.name "Your Name"
+git config --local user.email "your-address@example.com"
+git switch dev
+git pull --ff-only origin dev
+git switch -c feature/short-description
+```
+
+Commit and push the feature branch, then open a pull request into `dev`. Release approved changes from `dev` into `main`. Enable required checks/reviews in GitHub branch protection when the team agrees on its release policy; the workflow file does not enforce repository settings by itself.
+
+The GitHub Actions workflow runs Laravel tests, Pint, repository tracking checks, shell syntax checks and shared asset comparison for pull requests into `dev`/`main`. It uses the documented [checkout action](https://github.com/actions/checkout) and [PHP setup action](https://github.com/shivammathur/setup-php).
+
+Local commands:
+
+```bash
+docker compose exec -T php-laravel php artisan test --compact
+docker compose exec -T php-laravel vendor/bin/pint --format agent
+bin/sync-site-assets --check
+bin/check-repository
+```
+
+Tests map the `mysql` connection name used by the application to SQLite in memory and use array cache/session/mail. They never migrate or reset the development MySQL databases. Coverage includes quote validation/honeypot/rate limiting, staff permissions/login, status changes, CSV safety, content publishing, literal search and notification retries.
+
+### Updating an existing checkout after the repository cleanup
+
+Git removes the formerly tracked skeleton when this cleanup is merged. Stop the app/worker containers first, pull the approved branch, then restore core files through the locked dependencies:
+
+```bash
+docker compose --profile workers stop nginx php-magento magento-cron php-laravel laravel-queue laravel-scheduler
+git pull --ff-only origin dev
+./bin/bootstrap-laravel
+./bin/bootstrap-magento
+./bin/retire-magento-reporting
+make up
+make integrate
+make workers
+```
+
+Keep database volumes, local `.env`, Magento `app/etc/env.php` and uploaded media. Back up both databases before applying schema changes. No existing product/category/enquiry records are removed by these review migrations.
+
+Before production: choose and configure a CAPTCHA provider for the public quote form, approve its privacy wording, enable Magento 2FA and production mode, turn off debug logging, configure production edge security/cache headers and replace mkcert TLS. Acknowledgements already exclude submitted free text; the regression test preserves that restriction. The development settings remain active while this project is being previewed.

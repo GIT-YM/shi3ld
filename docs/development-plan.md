@@ -16,7 +16,7 @@ Separate cache instances isolate Magento cache flushes from Laravel queues. Both
 - Official Laravel scaffold, queue and scheduler.
 - Official Magento installation using local Marketplace credentials.
 - Shi3ld_Catalog, Shi3ld_Content and Shi3ld_Integration Magento modules, Shi3ld/Alliance theme.
-- Read-only reporting connection and API client in Laravel.
+- API client scaffolding in Laravel; reporting access is deferred until a feature defines the tables/views it needs.
 
 ## Step 2: cleaning enquiry milestone
 
@@ -76,3 +76,15 @@ Implemented: responsive public services site, 16 editable service pages, structu
 Magento now owns `/`, `/shop` and `/about`, with editable CMS blocks and the shared Shi3ld theme. Laravel owns `/services` and service enquiries/staff operations. Legacy Magento cleaning URLs redirect to Laravel; Laravel's former about URL redirects to Magento. Root sitemap indexing covers both frameworks. Development previews use sample content and noindex metadata.
 
 Staff enquiry access is implemented. Product catalogue import, checkout configuration, Phase 2 calendar/customer profiles, shared authentication and event delivery remain pending. Database ownership is unchanged: Magento schema/data patches and Laravel migrations remain separate.
+
+## Review requirements — 14 October 2026
+
+Implemented locally on `feature/review-hardening`: functional Laravel coverage and CI workflow, Composer-only Magento skeleton tracking, removal of unused database reporting access, locked/idempotent dependency installation, bounded per-channel mail retries with staff failure visibility, literal enquiry searches, shared asset comparison and OpenSearch/Valkey digest pins. The generated `pub/opt/` cache is excluded and removed locally.
+
+`shi3ld_integration_outbox` remains schema scaffolding: no event capture, dispatcher, delivery, deduplication or reconciliation is implemented. The API client is also not wired to application features.
+
+Developer Git identities need each person's name/email. Branch protection/review policy needs team configuration in GitHub. Production CAPTCHA/provider credentials, 2FA, debug mode, edge headers, TLS and cache policy remain launch work. The review changes add no third-party tracking or CAPTCHA scripts.
+
+On the second development server, use the existing-checkout procedure in README to regenerate Composer-owned Magento files after merging the cleanup, retire `magento_read`, and apply Laravel retry tracking. The original review document is kept unchanged as the record of the findings.
+
+Validation on rpidevserver: 28 Laravel tests pass with 149 assertions, including migration rollback/reapply; Pint passes; the initial 27-test suite also passes from a clean source copy using only `.env.example`. Both Composer lockfiles and Boost instruction files remain unchanged by the install checks. Magento's hotfix hook reports already applied. Shared assets, repository tracking, workflow YAML and shell syntax checks pass. The Laravel retry migration is applied after a private backup; `magento_read` is absent, and all three existing product rows remain. All 11 containers run; `/shop`, `/services` and `/services/quote` return HTTP 200. GitHub-hosted CI awaits publication of the branch.

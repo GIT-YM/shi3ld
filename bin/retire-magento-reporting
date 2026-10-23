@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+# Apply this to existing development volumes; init scripts run only on new ones.
+docker compose exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot' <<'SQL'
+DROP USER IF EXISTS 'magento_read'@'%';
+SQL
