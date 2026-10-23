@@ -18,7 +18,11 @@
     <meta property="og:image" content="{{ asset('services/assets/home-sample.jpg') }}">
     <title>@yield('title', 'Cleaning for the spaces that matter') | Shi3ld Alliance</title>
     <link rel="stylesheet" href="{{ asset('services/assets/site.css') }}">
+    <link rel="stylesheet" href="{{ asset('services/assets/cms.css') }}?v=20261021.3">
     <script src="{{ asset('services/assets/site.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ asset('services/assets/builder-runtime.css') }}?v=20261024.2">
+    {!! app(\App\Services\BuilderRuntime::class)->globalHtml() !!}
+    <script src="{{ asset('services/assets/builder-runtime.js') }}?v=20261024.2" defer></script>
     <link rel="icon" href="{{ asset('services/assets/favicon.svg') }}" type="image/svg+xml">
 </head>
 <body>
@@ -26,6 +30,9 @@
 @if(config('services_site.sample_content'))
 <div class="preview-bar">Development preview · Sample copy and imagery · Please use sample enquiry details.</div>
 @endif
+@if(!empty($sharedWebsiteDesign['header']))
+{!! $sharedWebsiteDesign['header'] !!}
+@else
 <div class="utility-bar"><div class="container"><span>Accessibility products · Cleaning services</span><a href="{{ config('shi3ld.shop_url') }}">Explore accessibility products <span aria-hidden="true">↗</span></a></div></div>
 <header class="site-header">
     <div class="container header-inner">
@@ -44,10 +51,14 @@
         </nav>
     </div>
 </header>
+@endif
 <main id="main">@yield('content')</main>
-@unless(request()->is('services/staff*') || request()->routeIs('quote.*'))
+@unless((request()->is('services/staff*') && !isset($document)) || request()->routeIs('quote.*'))
 <section class="cta-band"><div class="container cta-inner"><div><p class="eyebrow">LET’S TALK ABOUT YOUR SPACE</p><h2>A fresh start begins<br>with a conversation.</h2></div><div><p>Tell us what you need. We’ll discuss a cleaning plan that works for you.</p><a class="button button-light" href="{{ route('quote.create') }}">Request your quote <span aria-hidden="true">↗</span></a></div></div></section>
 @endunless
+@if(!empty($sharedWebsiteDesign['footer']))
+{!! $sharedWebsiteDesign['footer'] !!}
+@else
 <footer class="site-footer">
     <div class="container footer-grid">
         <div><a class="brand" href="{{ config('shi3ld.site_url') }}"><span>SHI3LD <span class="brand-small">ALLIANCE</span></span></a><p>Thoughtful care.<br>Support for everyday spaces.</p><a href="{{ config('shi3ld.shop_url') }}">Visit the accessibility shop ↗</a></div>
@@ -57,5 +68,13 @@
     </div>
     <div class="container footer-bottom"><span>© {{ now()->year }} Shi3ld Alliance</span><span>Accessibility products · Domestic, commercial and care-home cleaning.</span><a href="{{ route('login') }}">Services staff sign in</a></div>
 </footer>
+@endif
+@isset($contentEditorKey)
+@if(auth()->user()?->services_staff)
+<script src="{{ asset('services/assets/content-toolbar.js') }}?v=20261021.3" data-locate-url="{{ route('services.visual.locate', ['key' => $contentEditorKey]) }}" defer></script>
+@endif
+@endisset
+<script src="{{ asset('services/assets/content-toolbar.js') }}?v=20261021.3" data-locate-url="{{ rtrim(config('shi3ld.site_url'), '/') }}/admin/shi3ld_content/editor/locate/" defer></script>
+{!! app(\App\Services\BuilderRuntime::class)->popups() !!}
 </body>
 </html>

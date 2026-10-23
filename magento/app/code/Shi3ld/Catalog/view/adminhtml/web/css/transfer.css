@@ -1,0 +1,9 @@
+.shi3ld-catalogue-transfer h2{margin:30px 0 16px;font-size:22px;font-weight:600}
+.shi3ld-catalogue-transfer p{line-height:1.6;margin:12px 0}
+.shi3ld-catalogue-transfer>form{padding:22px 24px;background:#fafafa;border:1px solid #d6d6d6;margin:18px 0 30px}
+.shi3ld-catalogue-transfer textarea.admin__control-textarea{display:block;width:100%;max-width:680px;min-height:100px;padding:10px 12px;margin-top:8px;border:1px solid #adadad;background:#fff;font-family:monospace;font-size:14px}
+.shi3ld-catalogue-transfer input[type=checkbox]{margin-right:5px;vertical-align:middle}
+.shi3ld-catalogue-transfer input[type=file]{margin-left:12px}
+.shi3ld-catalogue-transfer .data-grid{margin:20px 0 28px}
+.shi3ld-catalogue-transfer .data-grid td{overflow-wrap:anywhere}
+.shi3ld-catalogue-transfer .message ul{margin:8px 0 4px 20px}

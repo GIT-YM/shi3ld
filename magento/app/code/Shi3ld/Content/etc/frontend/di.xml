@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Cms\Block\Page"><plugin name="shi3ld_builder_cms_rendering" type="Shi3ld\Content\Plugin\BuilderRendering" sortOrder="50"/></type>
+    <type name="Magento\Cms\Block\Block"><plugin name="shi3ld_builder_shared_rendering" type="Shi3ld\Content\Plugin\BuilderRendering" sortOrder="50"/></type>
+    <type name="Magento\PageCache\Model\Config"><plugin name="shi3ld_builder_private_conditions" type="Shi3ld\Content\Plugin\BuilderRendering" sortOrder="100"/></type>
+    <type name="Magento\Framework\App\Response\Http"><plugin name="shi3ld_builder_private_response" type="Shi3ld\Content\Plugin\BuilderRendering" sortOrder="100"/></type>
+    <type name="Magento\Cms\Block\Page"><plugin name="shi3ld_visual_page" type="Shi3ld\Content\Plugin\VisualCms"/></type>
+    <type name="Magento\Cms\Block\Block"><plugin name="shi3ld_visual_block" type="Shi3ld\Content\Plugin\VisualCms"/></type>
+    <type name="Magento\PageCache\Model\Config"><plugin name="shi3ld_disable_draft_cache" type="Shi3ld\Content\Plugin\PrivateCmsPreview"/></type>
+    <type name="Magento\Framework\App\Response\Http"><plugin name="shi3ld_private_draft_response" type="Shi3ld\Content\Plugin\PrivateCmsPreview" sortOrder="2000"/></type>
+</config>

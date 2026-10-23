@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd"><menu>
+    <add id="Shi3ld_Blog::studio" title="Blog Management" translate="title" module="Shi3ld_Blog" sortOrder="5" parent="Magento_Backend::content_elements" action="shi3ld_blog/studio/index" resource="Shi3ld_Content::visual_edit"/>
+    <add id="Shi3ld_Blog::articles" title="Blog Articles" translate="title" module="Shi3ld_Blog" sortOrder="6" parent="Magento_Backend::content_elements" action="shi3ld_blog/article/index" resource="Shi3ld_Content::visual_edit"/>
+    <add id="Shi3ld_Blog::categories" title="Blog Categories" translate="title" module="Shi3ld_Blog" sortOrder="7" parent="Magento_Backend::content_elements" action="shi3ld_blog/category/index" resource="Shi3ld_Content::visual_publish"/>
+    <add id="Shi3ld_Blog::widget" title="Blog Widget Builder" translate="title" module="Shi3ld_Blog" sortOrder="8" parent="Magento_Backend::content_elements" action="shi3ld_blog/widget/index" resource="Shi3ld_Content::visual_edit"/>
+</menu></config>

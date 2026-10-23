@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu><add id="Shi3ld_Catalog::transfer" title="Catalogue Transfer" translate="title" module="Shi3ld_Catalog" sortOrder="35" parent="Magento_Catalog::catalog" action="shi3ld_catalog/transfer/index" resource="Shi3ld_Catalog::transfer"/></menu>
+</config>

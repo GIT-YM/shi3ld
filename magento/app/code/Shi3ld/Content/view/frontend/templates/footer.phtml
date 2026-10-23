@@ -1,4 +1,9 @@
 <?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<?php $sharedFooter = $block->getLayout()->createBlock(\Magento\Cms\Block\Block::class)->setBlockId('shi3ld_global_footer')->toHtml(); ?>
+<div data-shi3ld-region="footer" style="display:contents">
+<?php if ($sharedFooter !== ''): ?>
+<?= /* @noEscape */ $sharedFooter ?>
+<?php else: ?>
 <div class="site-footer">
     <div class="container footer-grid">
         <div><a class="brand" href="<?= $block->escapeUrl($block->getUrl('')) ?>"><span>SHI3LD <span class="brand-small">ALLIANCE</span></span></a><p>Thoughtful care.<br>Support for everyday spaces.</p><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'shop'])) ?>">Visit the accessibility shop ↗</a></div>
@@ -7,4 +12,6 @@
         <div><h2>Shi3ld Alliance</h2><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'about'])) ?>">About us</a><?php foreach (['contact' => 'Contact us', 'privacy' => 'Service privacy information', 'cookies' => 'Service cookie information', 'terms' => 'Service terms'] as $path => $label): ?><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'services/'.$path])) ?>"><?= $block->escapeHtml($label) ?></a><?php endforeach; ?></div>
     </div>
     <div class="container footer-bottom"><span>© <?= (int) date('Y') ?> Shi3ld Alliance</span><span>Accessibility products · Domestic, commercial and care-home cleaning.</span><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'services/staff/login'])) ?>">Services staff sign in</a></div>
+</div>
+<?php endif; ?>
 </div>

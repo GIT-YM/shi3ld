@@ -1,0 +1,8 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<section class="shi3ld-checkout-intro" aria-labelledby="shi3ld-checkout-title">
+    <p class="eyebrow"><a href="<?= $block->escapeUrl($block->getUrl('', ['_direct' => 'shop'])) ?>">Shop</a> / Checkout</p>
+    <div class="shi3ld-checkout-heading">
+        <div><h1 id="shi3ld-checkout-title">Checkout</h1><p>Add your delivery details, choose shipping and review your order.</p></div>
+        <a class="text-link" href="<?= $block->escapeUrl($block->getUrl('checkout/cart')) ?>">← Back to your basket</a>
+    </div>
+</section>

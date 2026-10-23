@@ -1,0 +1,6 @@
+<?php /** @var \Shi3ld\Blog\Block\Subscription $block */ $state=$block->state(); ?>
+<section class="section container blog-subscription-page"><h1>Your article subscription</h1>
+<?php if(isset($state['error'])): ?><p><?= $block->escapeHtml($state['error']) ?></p><a class="button" href="/blog">Back to the journal</a>
+<?php else: ?><form data-blog-manage="<?= $block->escapeHtmlAttr($state['mode']) ?>" data-blog-selected-topics="<?= $block->escapeHtmlAttr(json_encode($state['category_ids'],JSON_THROW_ON_ERROR)) ?>"><input type="hidden" name="token" value="<?= $block->escapeHtmlAttr($state['token']) ?>">
+<?php if($state['mode']==='confirm'): ?><p>Confirm that you want to receive Shi3ld article digests. Each email includes a link to manage your topics or unsubscribe.</p><button type="submit" class="button" disabled>Confirm subscription</button>
+<?php else: ?><p>Status: <?= $block->escapeHtml($state['status']) ?></p><fieldset><legend>Your topics (leave empty for all articles)</legend><div data-blog-subscription-topics></div></fieldset><button type="submit" class="button" disabled>Save preferences</button><button type="button" class="button" data-blog-unsubscribe disabled>Unsubscribe</button><?php endif; ?><p data-form-status role="status"></p></form><?php endif; ?></section>

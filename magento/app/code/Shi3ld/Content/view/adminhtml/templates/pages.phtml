@@ -1,0 +1,20 @@
+<?php /** @var \Shi3ld\Content\Block\Adminhtml\Pages $block */ ?>
+<div class="message message-notice"><div>Choose <strong>Open frontend visual editor</strong> to edit the website canvas, save a private draft, preview it and publish when ready. Use <strong>Native Page Builder</strong> for advanced widget settings.</div></div>
+<table class="data-grid">
+    <thead><tr><th class="data-grid-th">Page</th><th class="data-grid-th">What you can edit</th><th class="data-grid-th">Action</th></tr></thead>
+    <tbody>
+    <?php foreach ($block->getWebsitePages() as $page): ?>
+        <tr><td><?= $block->escapeHtml($page->getTitle()) ?></td>
+        <td><?= $page->getIdentifier() === 'shop' ? 'Shop introduction and surrounding sections. The catalogue updates automatically from Products and Categories.' : 'Sections, columns, headings, text, images, buttons and links.' ?></td>
+        <td><a href="<?= $block->escapeUrl($block->getUrl('shi3ld_content/editor/index', ['type' => 'page', 'id' => $page->getId()])) ?>">Open frontend visual editor</a> · <a href="<?= $block->escapeUrl($block->getUrl('cms/page/edit', ['page_id' => $page->getId()])) ?>">Native Page Builder</a></td></tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<h2>Editing with native Page Builder</h2>
+<ol><li>Use <strong>Text</strong> for headings and paragraphs, <strong>Image</strong> for uploaded photos, and <strong>Buttons</strong> for calls to action.</li><li>Use rows and columns to add or move sections. The homepage’s existing product section uses Magento’s live product widget.</li><li>Use the mobile viewport in Page Builder and preview the saved page on the storefront.</li><li>Use <strong>Search Engine Optimization</strong> on each page to edit its meta title and description.</li></ol>
+<p><a href="<?= $block->escapeUrl($block->getUrl('cms/page/new')) ?>">Create another CMS page</a> · <a href="<?= $block->escapeUrl($block->getUrl('cms/page/index')) ?>">All CMS pages</a></p>
+<h2>Shared website regions</h2>
+<p><a href="<?= $block->escapeUrl($block->getUrl('shi3ld_blog/article/index')) ?>">Manage blog articles</a> · <a href="<?= $block->escapeUrl($block->getUrl('shi3ld_blog/widget/index')) ?>">Build a blog article widget</a>. In the frontend editor use <strong>Add → Blog articles</strong>, then click the section to choose categories, article counts, responsive columns and layouts.</p>
+<p><?php foreach ($block->getSharedRegions() as $region => $url): ?><a href="<?= $block->escapeUrl($url) ?>">Edit website <?= $block->escapeHtml($region) ?></a> · <?php endforeach; ?></p>
+<p>The frontend visual editor saves private drafts, previews them on the website and publishes only when you choose Publish. Its History tab lets you restore previous versions as a draft. Native Page Builder saves still publish directly.</p>
+<p>Published header/footer changes appear on both the shop and services site. Cleaning-service pages have a matching visual editor in the services staff content area. Checkout remains a transactional theme page.</p>

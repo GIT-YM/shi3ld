@@ -367,8 +367,9 @@ return [
         'PayPal_BraintreeGiftWrapping' => 1,
         'PayPal_BraintreeGraphQl' => 1,
         'PayPal_BraintreeReward' => 1,
-        'Shi3ld_Catalog' => 1,
         'Shi3ld_Content' => 1,
+        'Shi3ld_Catalog' => 1,
+        'Shi3ld_Blog' => 1,
         'Shi3ld_Integration' => 1
     ]
 ];

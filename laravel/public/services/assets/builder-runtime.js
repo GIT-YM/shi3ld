@@ -1,0 +1,59 @@
+(function () {
+    'use strict';
+    const mounted = new WeakSet();
+    let formQueue = Promise.resolve();
+    const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+    function mount(root = document, options = {}) {
+        const doc = root.nodeType === 9 ? root : root.ownerDocument;
+        const win = doc.defaultView;
+        doc.documentElement.classList.add('builder-enhanced');
+        root.querySelectorAll('[data-builder-widget="tabs"]').forEach(widget => {
+            if (mounted.has(widget)) return; mounted.add(widget);
+            const panels = [...widget.children].filter(element=>element.tagName==='SECTION');
+            if (options.preview) { panels.forEach(panel=>{panel.hidden=false;}); return; }
+            const list = doc.createElement('div'); list.className='builder-tab-list'; list.setAttribute('role','tablist');
+            const key = Math.random().toString(36).slice(2);
+            const buttons = panels.map((panel,index)=>{const button=doc.createElement('button');button.type='button';button.textContent=panel.querySelector('h2,h3,h4')?.textContent||'Tab '+(index+1);button.id='builder-tab-'+key+'-'+index;panel.id='builder-panel-'+key+'-'+index;button.setAttribute('role','tab');button.setAttribute('aria-controls',panel.id);panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',button.id);list.append(button);return button;});
+            function choose(index){panels.forEach((panel,i)=>{panel.hidden=i!==index;buttons[i].setAttribute('aria-selected',String(i===index));buttons[i].tabIndex=i===index?0:-1;});}
+            buttons.forEach((button,index)=>{button.addEventListener('click',()=>choose(index));button.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%buttons.length;else if(event.key==='ArrowLeft')next=(index-1+buttons.length)%buttons.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=buttons.length-1;else return;event.preventDefault();choose(next);buttons[next].focus();});});
+            widget.prepend(list);choose(0);
+        });
+        root.querySelectorAll('[data-builder-widget="gallery"] a').forEach(link=>{
+            if(mounted.has(link))return;mounted.add(link);link.addEventListener('click',event=>{event.preventDefault();const image=link.querySelector('img');if(!image)return;const dialog=doc.createElement('dialog');dialog.className='builder-lightbox';const close=doc.createElement('button');close.type='button';close.textContent='Close ×';close.setAttribute('aria-label','Close image');const picture=doc.createElement('img');picture.src=link.href;picture.alt=image.alt;dialog.append(close,picture);doc.body.append(dialog);close.addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});dialog.addEventListener('close',()=>{dialog.remove();link.focus();});dialog.showModal();});
+        });
+        root.querySelectorAll('[data-builder-widget="video"][data-builder-video]').forEach(widget=>{
+            if(mounted.has(widget))return;mounted.add(widget);const raw=widget.dataset.builderVideo;let url;
+            const youtube=raw.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)$/),vimeo=raw.match(/vimeo\.com\/(?:video\/)?([0-9]+)$/);
+            if(youtube)url='https://www.youtube-nocookie.com/embed/'+youtube[1];else if(vimeo)url='https://player.vimeo.com/video/'+vimeo[1];else return;
+            const button=doc.createElement('button');button.type='button';button.className='button builder-video-play';button.textContent=options.preview?'Video — open private preview to play':'Load video';widget.replaceChildren(button);button.addEventListener('click',()=>{if(options.preview)return;const frame=doc.createElement('iframe');frame.src=url;frame.title='Video player';frame.allow='fullscreen; picture-in-picture';frame.setAttribute('allowfullscreen','');frame.loading='lazy';widget.replaceChildren(frame);});
+        });
+        root.querySelectorAll('[data-builder-form]').forEach(async container=>{
+            if(mounted.has(container))return;mounted.add(container);const key=container.dataset.builderForm;
+            if(!/^[a-f0-9]{32}$/.test(key))return;
+            try{
+                const editing=Boolean(options.preview||container.hasAttribute('data-builder-form-preview'));let data;if(editing&&container.dataset.builderFormPreview){data={definition:JSON.parse(container.dataset.builderFormPreview),csrf:''};}else{const queued=formQueue.then(async()=>{const response=await fetch('/services/builder/forms/'+key,{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}});const answer=await response.json();if(!response.ok||!answer.definition)throw new Error('This form is not currently available.');return answer;});formQueue=queued.catch(()=>{});data=await queued;}
+                const definition=data.definition;
+                const extra=(definition.fields||[]).map(field=>{const name='fields['+field.name+']',required=field.required?'required':'';let control;if(field.type==='textarea')control='<textarea name="'+escape(name)+'" rows="4" maxlength="2000" '+required+'></textarea>';else if(field.type==='select')control='<select name="'+escape(name)+'" '+required+'><option value="">Select an option</option>'+(field.options||[]).map(option=>'<option>'+escape(option)+'</option>').join('')+'</select>';else control='<input name="'+escape(name)+'" type="'+escape(field.type)+'" '+required+' maxlength="2000">';return '<label>'+escape(field.label)+control+'</label>';}).join('');
+                container.innerHTML='<form class="builder-enquiry-form"><input type="hidden" name="_token" value="'+escape(data.csrf)+'"><label>Your name<input name="name" required maxlength="120" autocomplete="name"></label><label>Email address<input name="email" type="email" required maxlength="255" autocomplete="email"></label><label>Telephone (optional)<input name="phone" type="tel" maxlength="30" autocomplete="tel"></label><label>Postcode<input name="postcode" required maxlength="12" autocomplete="postal-code"></label>'+(definition.service_type!=='domestic'?'<label>Organisation<input name="organisation" required maxlength="180"></label><label>Site details<textarea name="site_details" required maxlength="500"></textarea></label>':'')+'<label>Your requirements<textarea name="requirements" required minlength="10" maxlength="3000" rows="5"></textarea></label>'+extra+'<label class="builder-privacy"><input type="checkbox" name="privacy_acknowledged" value="1" required> I have read the <a href="/services/privacy">privacy information</a> and agree to be contacted about this enquiry.</label><div class="builder-honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div><button class="button" type="submit" '+(editing?'disabled':'')+'>'+escape(editing?'Editing preview — submissions disabled':definition.button||'Send enquiry')+'</button><p class="builder-form-status" role="status" aria-live="polite"></p></form>';
+                const form=container.querySelector('form'),status=form.querySelector('.builder-form-status'),button=form.querySelector('button');
+                const referringArticle=doc.querySelector('[data-blog-post][data-blog-attribution]');
+                if(!editing&&referringArticle?.dataset.blogAttribution&&win.navigator.doNotTrack!=='1'&&!win.navigator.globalPrivacyControl){[['blog_ref',referringArticle.dataset.blogPost],['blog_token',referringArticle.dataset.blogAttribution]].forEach(([name,value])=>{const hidden=doc.createElement('input');hidden.type='hidden';hidden.name=name;hidden.value=value;form.append(hidden);});}
+                form.addEventListener('submit',async event=>{event.preventDefault();if(editing||button.disabled)return;button.disabled=true;status.textContent='Sending your enquiry…';try{const result=await fetch('/services/builder/forms/'+key,{method:'POST',credentials:'same-origin',body:new FormData(form),headers:{Accept:'application/json'}});const answer=await result.json();if(!result.ok)throw new Error(answer.message||Object.values(answer.errors||{}).flat().join(' ')||'Please check the form and try again.');status.textContent=(definition.success||'Thank you. Your enquiry has been received.')+' Reference: '+answer.reference;form.reset();}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
+            }catch(error){container.innerHTML='<p>'+escape(error.message)+' <a href="/services/quote">Open the enquiry form</a>.</p>';}
+        });
+        root.querySelectorAll('[data-builder-popup]').forEach(holder=>{
+            if(mounted.has(holder)||options.preview)return;mounted.add(holder);let settings;try{settings=JSON.parse(holder.dataset.builderPopup);}catch(_){return;}
+            const storageKey='shi3ld-popup-'+settings.key;const storage=settings.frequency==='day'?win.localStorage:win.sessionStorage;
+            function dismissed(){try{const value=Number(storage.getItem(storageKey)||0);return settings.frequency!=='always'&&(settings.frequency!=='day'?value>0:Date.now()-value<86400000);}catch(_){return false;}}
+            function remember(){if(settings.frequency==='always')return;try{storage.setItem(storageKey,String(Date.now()));}catch(_){}}
+            function open(){if(dismissed()||holder.dataset.open==='1')return;holder.dataset.open='1';const active=doc.activeElement;if(settings.trigger==='banner'){holder.hidden=false;holder.classList.add('builder-announcement');const close=doc.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Dismiss announcement');holder.prepend(close);close.addEventListener('click',()=>{holder.hidden=true;remember();});return;}const dialog=doc.createElement('dialog');dialog.className='builder-popup';const close=doc.createElement('button');close.type='button';close.className='builder-popup-close';close.textContent='Close ×';dialog.append(close,...[...holder.childNodes].map(node=>node.cloneNode(true)));doc.body.append(dialog);close.addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});dialog.addEventListener('close',()=>{remember();delete holder.dataset.open;dialog.remove();active?.focus();});dialog.showModal();mount(dialog,options);}
+            if(settings.trigger==='scroll'){const listener=()=>{const max=doc.documentElement.scrollHeight-win.innerHeight;if(max<=0||win.scrollY/max*100>=settings.scroll){open();win.removeEventListener('scroll',listener);}};win.addEventListener('scroll',listener,{passive:true});}
+            else if(settings.trigger==='click')doc.querySelectorAll('[data-builder-popup-open="'+settings.key+'"],a[href="#popup-'+settings.key+'"]').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();open();}));
+            else win.setTimeout(open,settings.trigger==='banner'?0:Number(settings.delay||0)*1000);
+        });
+        const animated=[...root.querySelectorAll('[data-builder-animation]:not([data-builder-animation="none"])')];
+        if(!options.preview&&!win.matchMedia('(prefers-reduced-motion: reduce)').matches&&win.IntersectionObserver){const observer=new win.IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('builder-visible');observer.unobserve(entry.target);}}),{threshold:0.1});animated.forEach(element=>observer.observe(element));}else animated.forEach(element=>element.classList.add('builder-visible'));
+    }
+    window.Shi3ldBuilderRuntime={mount};
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>mount());else mount();
+}());

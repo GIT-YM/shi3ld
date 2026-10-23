@@ -30,3 +30,4 @@
 /laravel/.env
 /laravel/storage/*.key
 /laravel/storage/app/private/
+/laravel/public/services/assets/content/

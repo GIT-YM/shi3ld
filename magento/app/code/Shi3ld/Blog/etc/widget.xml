@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="shi3ld_blog_articles" class="Shi3ld\Blog\Block\Widget\Articles">
+        <label translate="true">Shi3ld Blog Articles</label>
+        <description translate="true">Published blog articles with category filters and responsive layouts.</description>
+        <parameters>
+            <parameter name="card_template" xsi:type="select" visible="true" required="false" sort_order="15" source_model="Shi3ld\Blog\Model\CardOptions"><label translate="true">Custom article card design</label></parameter>
+            <parameter name="heading" xsi:type="text" visible="true" required="false" sort_order="10">
+                <label translate="true">Section heading</label>
+                <value>Advice &amp; resources</value>
+            </parameter>
+            <parameter name="categories" xsi:type="multiselect" visible="true" required="false" sort_order="20" source_model="Shi3ld\Blog\Model\CategoryOptions">
+                <label translate="true">Blog categories (none means all)</label>
+            </parameter>
+            <parameter name="limit" xsi:type="text" visible="true" required="false" sort_order="30">
+                <label translate="true">Number of articles (1–24)</label>
+                <value>6</value>
+            </parameter>
+            <parameter name="columns" xsi:type="text" visible="true" required="false" sort_order="40">
+                <label translate="true">Desktop columns (1–4)</label>
+                <value>3</value>
+            </parameter>
+            <parameter name="tablet_columns" xsi:type="text" visible="true" required="false" sort_order="50">
+                <label translate="true">Tablet columns (1–3)</label>
+                <value>2</value>
+            </parameter>
+            <parameter name="mobile_columns" xsi:type="text" visible="true" required="false" sort_order="60">
+                <label translate="true">Mobile columns (1–2)</label>
+                <value>1</value>
+            </parameter>
+            <parameter name="layout" xsi:type="select" visible="true" required="false" sort_order="70">
+                <label translate="true">Image position</label>
+                <options>
+                    <option name="option0" value="image-top" selected="true"><label translate="true">Image above text</label></option>
+                    <option name="option1" value="image-bottom"><label translate="true">Image below text</label></option>
+                    <option name="option2" value="image-left"><label translate="true">Image beside text</label></option>
+                    <option name="option3" value="text-only"><label translate="true">Text only</label></option>
+                </options>
+            </parameter>
+            <parameter name="design" xsi:type="select" visible="true" required="false" sort_order="80">
+                <label translate="true">Display style</label>
+                <options>
+                    <option name="option0" value="cards" selected="true"><label translate="true">Cards</label></option>
+                    <option name="option1" value="list"><label translate="true">List</label></option>
+                    <option name="option2" value="featured-grid"><label translate="true">First article featured + grid</label></option>
+                </options>
+            </parameter>
+            <parameter name="sort" xsi:type="select" visible="true" required="false" sort_order="90">
+                <label translate="true">Article order</label>
+                <options>
+                    <option name="option0" value="newest" selected="true"><label translate="true">Newest first</label></option>
+                    <option name="option1" value="oldest"><label translate="true">Oldest first</label></option>
+                    <option name="option2" value="featured"><label translate="true">Featured articles only</label></option>
+                    <option name="option3" value="manual"><label translate="true">Manually selected articles</label></option>
+                </options>
+            </parameter>
+            <parameter name="articles" xsi:type="text" visible="true" required="false" sort_order="100">
+                <label translate="true">Article IDs in display order (manual selection)</label>
+                <value></value>
+            </parameter>
+            <parameter name="excerpt_length" xsi:type="text" visible="true" required="false" sort_order="110">
+                <label translate="true">Excerpt length (0–500 characters)</label>
+                <value>150</value>
+            </parameter>
+            <parameter name="show_category" xsi:type="select" visible="true" required="false" sort_order="120">
+                <label translate="true">Show categories</label>
+                <options>
+                    <option name="option0" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_date" xsi:type="select" visible="true" required="false" sort_order="130">
+                <label translate="true">Show publication date</label>
+                <options>
+                    <option name="option0" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_author" xsi:type="select" visible="true" required="false" sort_order="140">
+                <label translate="true">Show author</label>
+                <options>
+                    <option name="option0" value="1"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0" selected="true"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_excerpt" xsi:type="select" visible="true" required="false" sort_order="150">
+                <label translate="true">Show excerpt</label>
+                <options>
+                    <option name="option0" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="show_read_more" xsi:type="select" visible="true" required="false" sort_order="160">
+                <label translate="true">Show Read more</label>
+                <options>
+                    <option name="option0" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="read_more_label" xsi:type="text" visible="true" required="false" sort_order="170">
+                <label translate="true">Read more label</label>
+                <value>Read more</value>
+            </parameter>
+            <parameter name="view_all" xsi:type="select" visible="true" required="false" sort_order="180">
+                <label translate="true">Show View all articles</label>
+                <options>
+                    <option name="option0" value="1" selected="true"><label translate="true">Yes</label></option>
+                    <option name="option1" value="0"><label translate="true">No</label></option>
+                </options>
+            </parameter>
+            <parameter name="image_ratio" xsi:type="select" visible="true" required="false" sort_order="190">
+                <label translate="true">Image shape</label>
+                <options>
+                    <option name="option0" value="landscape" selected="true"><label translate="true">Landscape</label></option>
+                    <option name="option1" value="square"><label translate="true">Square</label></option>
+                    <option name="option2" value="portrait"><label translate="true">Portrait</label></option>
+                </options>
+            </parameter>
+            <parameter name="spacing" xsi:type="select" visible="true" required="false" sort_order="200">
+                <label translate="true">Spacing</label>
+                <options>
+                    <option name="option0" value="compact"><label translate="true">Compact</label></option>
+                    <option name="option1" value="normal" selected="true"><label translate="true">Normal</label></option>
+                    <option name="option2" value="relaxed"><label translate="true">Relaxed</label></option>
+                </options>
+            </parameter>
+            <parameter name="background" xsi:type="select" visible="true" required="false" sort_order="210">
+                <label translate="true">Background</label>
+                <options>
+                    <option name="option0" value="white" selected="true"><label translate="true">White</label></option>
+                    <option name="option1" value="soft"><label translate="true">Soft green</label></option>
+                    <option name="option2" value="dark"><label translate="true">Dark green</label></option>
+                </options>
+            </parameter>
+            <parameter name="button_style" xsi:type="select" visible="true" required="false" sort_order="220">
+                <label translate="true">Read more style</label>
+                <options>
+                    <option name="option0" value="link" selected="true"><label translate="true">Text link</label></option>
+                    <option name="option1" value="button"><label translate="true">Button</label></option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

@@ -1,0 +1,14 @@
+[
+  {"key":"straight-rail","name":"Straight Grab Rail","category":"Grab Rails","sizes":["300 mm","450 mm","600 mm"],"colours":["White","Silver"],"price":22,"weight":0.8},
+  {"key":"angled-rail","name":"Angled Grab Rail","category":"Grab Rails","sizes":["300 mm","450 mm","600 mm"],"colours":["White","Black"],"price":28,"weight":1.0},
+  {"key":"folding-rail","name":"Folding Support Rail","category":"Grab Rails","sizes":["600 mm","750 mm","900 mm"],"colours":["White","Silver"],"price":65,"weight":2.2},
+  {"key":"shower-shelf","name":"Shower Storage Shelf","category":"Bathroom Accessories","sizes":["Small","Medium","Large"],"colours":["White","Grey"],"price":18,"weight":0.6},
+  {"key":"bathroom-hook","name":"Bathroom Towel Hook Set","category":"Bathroom Accessories","sizes":["Small","Medium","Large"],"colours":["Black","Silver"],"price":12,"weight":0.3},
+  {"key":"shower-seat","name":"Folding Shower Seat","category":"Bathroom Accessories","sizes":["Small","Medium","Large"],"colours":["White","Grey"],"price":75,"weight":3.5},
+  {"key":"door-buffer","name":"Door Buffer Strip","category":"Door Accessories","sizes":["600 mm","750 mm","900 mm"],"colours":["White","Black"],"price":16,"weight":0.4},
+  {"key":"door-plate","name":"Door Push Plate","category":"Door Accessories","sizes":["Small","Medium","Large"],"colours":["Black","Silver"],"price":24,"weight":0.5},
+  {"key":"door-guard","name":"Door Edge Guard","category":"Door Accessories","sizes":["600 mm","750 mm","900 mm"],"colours":["White","Grey"],"price":20,"weight":0.5},
+  {"key":"entrance-mat","name":"Entrance Mat","category":"Everyday Home Accessories","sizes":["Small","Medium","Large"],"colours":["Grey","Navy"],"price":25,"weight":1.2},
+  {"key":"storage-caddy","name":"Home Storage Caddy","category":"Everyday Home Accessories","sizes":["Small","Medium","Large"],"colours":["White","Grey"],"price":14,"weight":0.4},
+  {"key":"shelf-tray","name":"Organiser Shelf Tray","category":"Everyday Home Accessories","sizes":["Small","Medium","Large"],"colours":["Black","Navy"],"price":15,"weight":0.5}
+]

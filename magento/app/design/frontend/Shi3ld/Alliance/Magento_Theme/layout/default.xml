@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head><css src="css/shi3ld-site.css"/></head>
+    <head><css src="css/shi3ld-site.css"/><css src="css/shi3ld-cms.css"/></head>
     <body>
         <referenceContainer name="header.container">
             <block class="Magento\Framework\View\Element\Template" name="shi3ld.header" template="Shi3ld_Content::header.phtml"/>
@@ -16,6 +16,7 @@
             <block class="Magento\Framework\View\Element\Template" name="shi3ld.footer" template="Shi3ld_Content::footer.phtml"/>
         </referenceContainer>
         <referenceContainer name="before.body.end">
+            <block class="Shi3ld\Content\Block\EditorToolbar" name="shi3ld.editor.toolbar" template="Shi3ld_Content::editor-toolbar.phtml"/>
             <block class="Magento\Framework\View\Element\Template" name="shi3ld.script" template="Shi3ld_Content::script.phtml"/>
         </referenceContainer>
     </body>

@@ -1,6 +1,15 @@
 # Rendered at container start by the nginx image (envsubst). Only ${SITE_HOST}
 # is substituted (NGINX_ENVSUBST_FILTER in compose.yaml); set it in the root .env.
 resolver 127.0.0.11 valid=10s ipv6=off;
+# This map is cached at the first rewrite pass, before Magento rewrites to
+# index.php. Use the normalized URI so traversal cannot borrow an exempt path.
+map $uri $shi3ld_access_exempt {
+    default 0;
+    ~^/admin(?:/|$) 1;
+    ~^/(?:static|media)(?:/|$) 1;
+    ~^/services/assets/ 1;
+    ~^/site-preview/access/offline/?$ 1;
+}
 map $uri $services_redirect_path {
     ~^/services(?:/|$) $request_uri;
     default /services$request_uri;
@@ -21,6 +30,7 @@ server {
     set $MAGE_ROOT /workspace/magento;
     set $MAGE_MODE developer;
     include /etc/nginx/magento.conf;
+    include /etc/nginx/laravel-services.conf;
 }
 server {
     listen 80;
@@ -41,6 +51,48 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     set $MAGE_ROOT /workspace/magento;
     set $MAGE_MODE developer;
+    set $shi3ld_skip_access $shi3ld_access_exempt;
+    auth_request /_shi3ld/access-check;
+    error_page 401 = @shi3ld_offline;
+
+    location = /_shi3ld/access-check {
+        internal;
+        auth_request off;
+        error_page 401 =401 /_shi3ld/access-denied;
+        if ($shi3ld_skip_access = 1) { return 204; }
+        if (!-f /workspace/magento/var/shi3ld/site-access/offline.json) { return 204; }
+        if ($cookie_shi3ld_site_preview = '') { return 401; }
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /workspace/magento/pub/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+        fastcgi_param REQUEST_URI /site-preview/access/check/;
+        fastcgi_param REQUEST_METHOD GET;
+        fastcgi_param QUERY_STRING '';
+        fastcgi_param CONTENT_LENGTH '';
+        fastcgi_pass_request_body off;
+        fastcgi_pass fastcgi_backend;
+    }
+
+    location = /_shi3ld/access-denied {
+        internal;
+        auth_request off;
+        return 401;
+    }
+
+    location @shi3ld_offline {
+        auth_request off;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME /workspace/magento/pub/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+        fastcgi_param REQUEST_URI /site-preview/access/offline/;
+        fastcgi_param REQUEST_METHOD GET;
+        fastcgi_param QUERY_STRING '';
+        fastcgi_param CONTENT_LENGTH '';
+        fastcgi_param SHI3LD_ORIGINAL_URI $request_uri;
+        fastcgi_param SHI3LD_ORIGINAL_METHOD $request_method;
+        fastcgi_pass_request_body off;
+        fastcgi_pass fastcgi_backend;
+    }
     include /etc/nginx/laravel-services.conf;
     location = /home/ { return 301 https://${SITE_HOST}/$is_args$args; }
     location = /shi3ld-home/ { return 301 https://${SITE_HOST}/$is_args$args; }

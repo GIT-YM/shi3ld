@@ -1,0 +1,6 @@
+<?php /** @var \Shi3ld\Content\Block\Adminhtml\SiteAccess $block */ ?>
+<?php if ($block->showOfflineNotice()): ?>
+<div class="message message-warning"><div><strong>Website offline:</strong> visitors cannot browse the shop or services.
+    <a href="<?= $block->escapeUrl($block->getUrl('shi3ld_content/siteaccess/index')) ?>"><?= $block->redirectsAdministrators() ? 'Manage status — administrator frontend access is automatic' : 'Manage status and open private preview' ?></a>.
+</div></div>
+<?php endif; ?>

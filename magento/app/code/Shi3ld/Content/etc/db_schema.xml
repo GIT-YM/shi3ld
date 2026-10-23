@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="shi3ld_cms_document" resource="default" engine="innodb" comment="Shi3ld visual CMS drafts">
+        <column xsi:type="int" name="document_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="entity_type" length="12" nullable="false"/>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false"/>
+        <column xsi:type="mediumtext" name="payload" nullable="false"/>
+        <column xsi:type="varchar" name="base_hash" length="64" nullable="false"/>
+        <column xsi:type="int" name="version" unsigned="true" nullable="false" default="1"/>
+        <column xsi:type="varchar" name="updated_by" length="150" nullable="false"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="document_id"/></constraint>
+        <constraint xsi:type="unique" referenceId="SHI3LD_CMS_DOCUMENT_ENTITY"><column name="entity_type"/><column name="entity_id"/></constraint>
+    </table>
+    <table name="shi3ld_cms_revision" resource="default" engine="innodb" comment="Shi3ld visual CMS revision history">
+        <column xsi:type="int" name="revision_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="entity_type" length="12" nullable="false"/>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false"/>
+        <column xsi:type="mediumtext" name="payload" nullable="false"/>
+        <column xsi:type="varchar" name="action" length="30" nullable="false"/>
+        <column xsi:type="varchar" name="created_by" length="150" nullable="false"/>
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="revision_id"/></constraint>
+        <index referenceId="SHI3LD_CMS_REVISION_ENTITY" indexType="btree"><column name="entity_type"/><column name="entity_id"/><column name="revision_id"/></index>
+    </table>
+    <table name="shi3ld_builder_asset" resource="default" engine="innodb" comment="Reusable visual builder designs">
+        <column xsi:type="int" name="asset_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="asset_key" length="32" nullable="false"/>
+        <column xsi:type="varchar" name="kind" length="20" nullable="false"/>
+        <column xsi:type="varchar" name="title" length="255" nullable="false"/>
+        <column xsi:type="mediumtext" name="initial_payload" nullable="false"/>
+        <column xsi:type="mediumtext" name="live_payload" nullable="true"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="asset_id"/></constraint>
+        <constraint xsi:type="unique" referenceId="SHI3LD_BUILDER_ASSET_KEY"><column name="asset_key"/></constraint>
+    </table>
+    <table name="shi3ld_builder_page" resource="default" engine="innodb" comment="Published builder page settings">
+        <column xsi:type="int" name="setting_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="entity_type" length="12" nullable="false"/>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false"/>
+        <column xsi:type="mediumtext" name="settings" nullable="false"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="setting_id"/></constraint>
+        <constraint xsi:type="unique" referenceId="SHI3LD_BUILDER_PAGE_ENTITY"><column name="entity_type"/><column name="entity_id"/></constraint>
+    </table>
+    <table name="shi3ld_builder_workflow" resource="default" engine="innodb" comment="Builder publication review and scheduling">
+        <column xsi:type="int" name="workflow_id" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="varchar" name="entity_type" length="12" nullable="false"/>
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false"/>
+        <column xsi:type="int" name="version" unsigned="true" nullable="false"/>
+        <column xsi:type="varchar" name="state" length="20" nullable="false"/>
+        <column xsi:type="int" name="actor_id" unsigned="true" nullable="false"/>
+        <column xsi:type="varchar" name="requested_by" length="150" nullable="false"/>
+        <column xsi:type="timestamp" name="scheduled_at" nullable="true" on_update="false"/>
+        <column xsi:type="text" name="note" nullable="true"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY"><column name="workflow_id"/></constraint>
+        <constraint xsi:type="unique" referenceId="SHI3LD_BUILDER_WORKFLOW_ENTITY"><column name="entity_type"/><column name="entity_id"/></constraint>
+        <index referenceId="SHI3LD_BUILDER_WORKFLOW_DUE" indexType="btree"><column name="state"/><column name="scheduled_at"/></index>
+    </table>
+</schema>

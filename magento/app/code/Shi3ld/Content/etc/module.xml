@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-  <module name="Shi3ld_Content"><sequence><module name="Magento_Cms"/><module name="Magento_Theme"/><module name="Magento_Catalog"/><module name="Magento_Sitemap"/></sequence></module>
+  <module name="Shi3ld_Content"><sequence><module name="Magento_Backend"/><module name="Magento_User"/><module name="Magento_Security"/><module name="Magento_Csp"/><module name="Magento_Cms"/><module name="Magento_Theme"/><module name="Magento_Catalog"/><module name="Magento_Sitemap"/><module name="Magento_PageBuilder"/><module name="Magento_CatalogWidget"/><module name="Magento_MediaGallery"/></sequence></module>
 </config>

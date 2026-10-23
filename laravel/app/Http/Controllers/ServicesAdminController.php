@@ -7,6 +7,7 @@ use App\Http\Requests\StoreServicePageRequest;
 use App\Http\Requests\UpdateServiceEnquiryRequest;
 use App\Models\ServiceEnquiry;
 use App\Models\ServicePage;
+use App\Services\ContentDocuments;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -108,23 +109,26 @@ class ServicesAdminController extends Controller
         ]);
     }
 
-    public function content(): View
+    public function content(ContentDocuments $documents): View
     {
-        return view('services.staff.content', ['pages' => ServicePage::orderBy('category')->orderBy('title')->get()]);
+        return view('services.staff.content', ['pages' => ServicePage::orderBy('category')->orderBy('title')->get(),
+            'visualDocuments' => array_filter($documents->keys(), fn ($item) => ! str_starts_with($item['key'], 'page-'))]);
     }
 
-    public function editContent(ServicePage $page): View
+    public function editContent(ServicePage $page, ContentDocuments $documents): View
     {
-        return view('services.staff.edit', compact('page'));
+        return view('services.staff.edit', ['page' => $page, 'visualManaged' => $documents->isManaged('page-'.$page->id)]);
     }
 
-    public function updateContent(StoreServicePageRequest $request, ServicePage $page): RedirectResponse
+    public function updateContent(StoreServicePageRequest $request, ServicePage $page, ContentDocuments $documents): RedirectResponse
     {
         $data = $request->safe()->except(['tasks_text', 'extras_text']);
         $data['tasks'] = $this->lines($request->validated('tasks_text'));
         $data['extras'] = $this->lines($request->validated('extras_text') ?? '');
         $data['faqs'] = array_values(array_filter($data['faqs'] ?? [], fn ($faq) => filled($faq['question'] ?? null) && filled($faq['answer'] ?? null)));
-        $page->update($data);
+        if (! $documents->updateStructured($page, $data)) {
+            return redirect()->route('services.staff.visual', 'page-'.$page->id)->with('message', 'This page uses the visual editor. Update its content there to preserve its layout.');
+        }
 
         return back()->with('message', 'Page saved.');
     }

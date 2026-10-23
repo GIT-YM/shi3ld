@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"><body><referenceContainer name="content"><block class="Shi3ld\Blog\Block\Adminhtml\Studio" name="shi3ld.blog.studio" template="Shi3ld_Blog::admin/studio.phtml"/></referenceContainer></body></page>

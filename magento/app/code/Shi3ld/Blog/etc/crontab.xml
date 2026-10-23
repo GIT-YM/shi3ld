@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd"><group id="default">
+    <job name="shi3ld_blog_maintenance" instance="Shi3ld\Blog\Model\Editorial\Maintenance" method="run"><schedule>*/5 * * * *</schedule></job>
+    <job name="shi3ld_blog_mail_delivery" instance="Shi3ld\Blog\Model\Editorial\Delivery" method="run"><schedule>* * * * *</schedule></job>
+</group></config>

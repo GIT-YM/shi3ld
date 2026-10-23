@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head><css src="css/shi3ld-checkout.css"/></head>
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="shi3ld.header">
+            <arguments><argument name="hide_commerce_tools" xsi:type="boolean">true</argument></arguments>
+        </referenceBlock>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="shi3ld.checkout.intro" template="Shi3ld_Content::checkout-intro.phtml" before="checkout.root"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,91 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>We’ll be back soon | Shi3ld Alliance</title>
+    <?php if ($block->getData('automatic_preview')): ?>
+    <script nonce="<?= $block->escapeHtmlAttr($block->getData('script_nonce')) ?>">document.documentElement.classList.add('shi3ld-checking-access');</script>
+    <?php endif; ?>
+    <style>
+        :root{color-scheme:light;font-family:Arial,Helvetica,sans-serif;color:#173d32;background:#f6f4eb}
+        *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px}
+        main{width:100%;max-width:690px;background:#fffef9;border:1px solid #dce3d9;border-radius:24px;padding:64px 58px;box-shadow:0 24px 70px #173d320c}
+        .brand{font-size:16px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin:0 0 64px}
+        .status{display:inline-flex;align-items:center;gap:9px;background:#e9eedf;border-radius:30px;padding:9px 14px;font-size:13px;font-weight:700}
+        .status:before{content:"";height:7px;width:7px;border-radius:50%;background:#6a8066}
+        h1{font-family:Georgia,serif;font-size:clamp(38px,7vw,58px);font-weight:400;line-height:1.08;letter-spacing:-.035em;margin:24px 0 20px}
+        .message{color:#53655b;font-size:18px;line-height:1.7;white-space:pre-line;overflow-wrap:anywhere;margin-bottom:38px}
+        .login{display:inline-block;padding:15px 22px;border-radius:8px;background:#173d32;color:white;text-decoration:none;font-size:15px;font-weight:700}
+        .login:hover{background:#275444}.login:focus-visible{outline:3px solid #a6ba92;outline-offset:4px}
+        .note{font-size:13px;line-height:1.6;color:#68776d;margin:15px 0 0}
+        #site-access-check{display:none}.shi3ld-checking-access #offline-content{display:none}.shi3ld-checking-access #site-access-check{display:block}
+        @media(max-width:520px){body{padding:16px}main{padding:38px 26px;border-radius:18px}.brand{margin-bottom:45px;font-size:14px}.message{font-size:16px}.login{width:100%;text-align:center}}
+    </style>
+</head>
+<body>
+<main id="offline-content">
+    <p class="brand">Shi3ld Alliance</p>
+    <span class="status">Temporarily offline</span>
+    <h1>A little time<br>to make things better.</h1>
+    <p class="message"><?= $block->escapeHtml($block->getData('offline_message')) ?></p>
+    <a class="login" href="<?= $block->escapeUrl($block->getData('admin_url')) ?>">Administrator sign in</a>
+    <p class="note"><?= $block->getData('automatic_preview') ? 'Administrators can sign in to view the website automatically in this browser.' : 'Administrators can sign in and open a private website preview.' ?></p>
+</main>
+<?php if ($block->getData('automatic_preview')): ?>
+<main id="site-access-check" role="status" aria-live="polite">
+    <p class="brand">Shi3ld Alliance</p>
+    <h1>Loading website…</h1>
+    <p class="message">Please wait a moment.</p>
+</main>
+<script nonce="<?= $block->escapeHtmlAttr($block->getData('script_nonce')) ?>">
+(function () {
+    'use strict';
+    var showOffline = function () {
+        document.documentElement.classList.remove('shi3ld-checking-access');
+    };
+    if (!window.fetch || !window.AbortController) {
+        showOffline();
+        return;
+    }
+    var controller = new AbortController();
+    var timeout = window.setTimeout(function () {
+        controller.abort();
+        showOffline();
+    }, 10000);
+    var options = {
+        method: 'GET',
+        credentials: 'same-origin',
+        cache: 'no-store',
+        redirect: 'error',
+        headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+        signal: controller.signal
+    };
+    fetch(<?= /* @noEscape */ json_encode($block->getData('admin_preview_url'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, options)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Administrator access unavailable');
+            }
+            return response.json();
+        })
+        .then(function (result) {
+            if (result.allowed !== true) {
+                throw new Error('Administrator sign-in required');
+            }
+            // Confirm the browser accepted the preview cookie before reloading.
+            return fetch('/site-preview/access/check/', options);
+        })
+        .then(function (response) {
+            if (response.status !== 204) {
+                throw new Error('Administrator access unavailable');
+            }
+            window.location.reload();
+        })
+        .catch(showOffline)
+        .finally(function () { window.clearTimeout(timeout); });
+}());
+</script>
+<?php endif; ?>
+</body>
+</html>

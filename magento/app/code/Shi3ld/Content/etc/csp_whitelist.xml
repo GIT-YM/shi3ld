@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd"><policies><policy id="frame-src"><values><value id="shi3ld-youtube-privacy" type="host">https://www.youtube-nocookie.com</value><value id="shi3ld-vimeo" type="host">https://player.vimeo.com</value></values></policy></policies></csp_whitelist>

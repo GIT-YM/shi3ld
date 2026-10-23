@@ -1,0 +1,73 @@
+<?php /** @var \Shi3ld\Catalog\Block\Adminhtml\Transfer $block */ ?>
+<?php $job = $block->getTransfer(); $plan = $job['plan'] ?? null; ?>
+<div class="shi3ld-catalogue-transfer">
+<div class="message message-notice"><div>
+    <strong><?= $block->escapeHtml(ucfirst($block->getEnvironmentName())) ?> · <?= $block->escapeHtml($block->getTargetHost()) ?></strong><br>
+    Promote an approved catalogue from development → staging → production. Products are matched by SKU; categories and options are matched without copying database IDs.
+</div></div>
+
+<h2>1. Export from this environment</h2>
+<p>The ZIP contains product content, SEO fields, supported custom attributes, categories, images and all variants of selected configurable products. Leave SKUs empty to include the default website catalogue.</p>
+<form method="post" action="<?= $block->escapeUrl($block->getUrl('*/*/export')) ?>">
+    <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()) ?>">
+    <div class="admin__field"><label for="export-skus"><strong>Product SKUs</strong> — one per line or separated by commas</label><br>
+        <textarea id="export-skus" name="skus" class="admin__control-textarea" rows="3" maxlength="65536"></textarea>
+    </div>
+    <p><label><input type="checkbox" name="prices" value="1"> Include prices</label> &nbsp;
+       <label><input type="checkbox" name="stock" value="1"> Include stock quantities</label> &nbsp;
+       <label><input type="checkbox" name="samples" value="1"> Include development samples</label></p>
+    <p><button type="submit" class="action-primary"><span>Download catalogue package</span></button></p>
+</form>
+
+<h2>2. Upload to the next environment</h2>
+<p>Previewing leaves products, categories, attributes, prices and stock unchanged. Current upload limit: <?= $block->escapeHtml($block->getUploadLimit()) ?>. Large packages can be imported through the Magento command line.</p>
+<form method="post" enctype="multipart/form-data" action="<?= $block->escapeUrl($block->getUrl('*/*/preview')) ?>">
+    <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()) ?>">
+    <p><label for="catalogue-package">Catalogue ZIP</label> <input id="catalogue-package" type="file" name="package" accept=".zip,application/zip" required></p>
+    <p><label><input type="checkbox" name="prices" value="1"> Apply packaged prices</label> &nbsp;
+       <label><input type="checkbox" name="stock" value="1"> Apply packaged stock quantities</label></p>
+    <p>Existing prices, tax classes and stock are preserved by default. New products remain disabled unless both price and stock import are selected. Development sample SKUs cannot be imported into production.</p>
+    <p><button type="submit"><span>Upload and preview</span></button></p>
+</form>
+
+<?php if ($job && $plan): ?>
+<h2>3. Review catalogue transfer</h2>
+<p><strong>Reference:</strong> <?= $block->escapeHtml($job['id']) ?> · <strong>Status:</strong> <?= $block->escapeHtml($job['status']) ?><br>
+   <strong>Source:</strong> <?= $block->escapeHtml(($plan['source']['environment'] ?? '') . ' · ' . ($plan['source']['host'] ?? '')) ?> · exported <?= $block->escapeHtml($plan['created_at']) ?></p>
+<p><strong><?= (int) $plan['new'] ?></strong> new products · <strong><?= (int) $plan['update'] ?></strong> existing products · <?= (int) $plan['categories'] ?> categories · <?= (int) $plan['images'] ?> image files.<br>
+   Prices: <strong><?= $plan['prices'] ? 'apply' : 'preserve' ?></strong> · Stock: <strong><?= $plan['stock'] ? 'apply' : 'preserve' ?></strong> · New products kept disabled: <strong><?= (int) $plan['new_disabled'] ?></strong>.<br>
+   New attributes: <?= $block->escapeHtml(implode(', ', $plan['new_attributes']) ?: 'none') ?> · New attribute sets: <?= $block->escapeHtml(implode(', ', $plan['new_sets']) ?: 'none') ?>.</p>
+<?php if ($plan['errors']): ?>
+    <div class="message message-error"><div><strong>Resolve these before importing:</strong><ul>
+    <?php foreach ($plan['errors'] as $error): ?><li><?= $block->escapeHtml($error) ?></li><?php endforeach; ?>
+    </ul></div></div>
+<?php endif; ?>
+<?php if (!empty($plan['warnings'])): ?>
+    <div class="message message-warning"><div><strong>Data requiring separate handling:</strong><ul>
+    <?php foreach ($plan['warnings'] as $warning): ?><li><?= $block->escapeHtml($warning) ?></li><?php endforeach; ?>
+    </ul></div></div>
+<?php endif; ?>
+<?php if (!empty($job['error'])): ?><div class="message message-error"><div><?= $block->escapeHtml($job['error']) ?><br><?= count($job['saved']) ?> products were saved before this transfer stopped. Review the saved product list and snapshot before retrying.</div></div><?php endif; ?>
+<?php if (!empty($job['backup'])): ?><p><a href="<?= $block->escapeUrl($block->getUrl('*/*/backup', ['job' => $job['id']])) ?>">Download catalogue snapshot from before this import</a></p><?php endif; ?>
+<?php if ($job['status'] === 'preview' && !$plan['errors']): ?>
+    <p>Applying creates missing attributes/options, attribute sets and categories, then saves products through Magento. It keeps existing product status/visibility and adds category memberships and images without deleting existing records. A snapshot of existing selected products is saved first. Transfers expire after 24 hours.</p>
+    <form method="post" action="<?= $block->escapeUrl($block->getUrl('*/*/apply')) ?>">
+        <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getFormKey()) ?>">
+        <input type="hidden" name="job" value="<?= $block->escapeHtmlAttr($job['id']) ?>">
+        <?php if ($block->getEnvironmentName() === 'production'): ?><p><label for="confirm-host">Type <strong><?= $block->escapeHtml($block->getTargetHost()) ?></strong> to confirm this production import</label><br><input id="confirm-host" name="confirm_host" type="text" class="admin__control-text" autocomplete="off" required></p><?php endif; ?>
+        <p><button type="submit" class="action-primary"><span>Apply reviewed catalogue</span></button></p>
+    </form>
+<?php endif; ?>
+<table class="data-grid"><thead><tr><th class="data-grid-th">SKU</th><th class="data-grid-th">Product</th><th class="data-grid-th">Type</th><th class="data-grid-th">Action</th></tr></thead><tbody>
+<?php foreach ($plan['rows'] as $row): ?><tr><td><?= $block->escapeHtml($row['sku']) ?></td><td><?= $block->escapeHtml($row['name']) ?></td><td><?= $block->escapeHtml($row['type']) ?></td><td><?= $block->escapeHtml($row['action']) ?></td></tr><?php endforeach; ?>
+</tbody></table>
+<?php endif; ?>
+
+<h2>Recent imports and previews</h2>
+<table class="data-grid"><thead><tr><th class="data-grid-th">Reference</th><th class="data-grid-th">Created (UTC)</th><th class="data-grid-th">Status</th><th class="data-grid-th">Products saved</th></tr></thead><tbody>
+<?php foreach ($block->getTransfers() as $transfer): ?><tr><td>
+    <?php if ((int) $transfer['owner'] !== 0): ?><a href="<?= $block->escapeUrl($block->getUrl('*/*/index', ['job' => $transfer['id']])) ?>"><?= $block->escapeHtml($transfer['id']) ?></a><?php else: ?><?= $block->escapeHtml($transfer['id']) ?> (CLI)<?php endif; ?>
+    </td><td><?= $block->escapeHtml(gmdate('Y-m-d H:i', $transfer['created_at'])) ?></td><td><?= $block->escapeHtml($transfer['status']) ?></td><td><?= count($transfer['saved']) ?></td></tr><?php endforeach; ?>
+</tbody></table>
+<p>Supported: simple/configurable products in the default website and global product content, with JPEG/PNG/GIF images and basic custom attributes. Custom product options, videos, tier prices, store-view overrides and removals are managed separately. Imports run in steps; a failure can leave completed changes recorded in the transfer history.</p>
+</div>

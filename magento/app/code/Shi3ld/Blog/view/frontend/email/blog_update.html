@@ -1,0 +1,9 @@
+<!--@subject {{var title}} @-->
+<!--@vars {"var title":"Message title","var message":"Message text","var entries|raw":"Escaped article links","var url":"Action URL","var button":"Action label","var manage_url":"Subscription management URL"} @-->
+{{template config_path="design/email/header_template"}}
+<h1>{{var title}}</h1>
+<p>{{var message}}</p>
+{{if entries}}<div>{{var entries|raw}}</div>{{/if}}
+<p><a href="{{var url}}">{{var button}}</a></p>
+{{if manage_url}}<p><a href="{{var manage_url}}">Change your topics or unsubscribe</a></p>{{/if}}
+{{template config_path="design/email/footer_template"}}

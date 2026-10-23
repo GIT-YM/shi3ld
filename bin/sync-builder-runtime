@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""Distribute the framework-independent builder parser to the services application."""
+from pathlib import Path
+import sys
+
+root = Path(__file__).resolve().parent.parent
+source = root / 'magento/app/code/Shi3ld/Content/Model/Builder'
+target = root / 'laravel/app/Services/Builder'
+changed = []
+for name in ('Css.php', 'Schema.php', 'Engine.php'):
+    text = (source / name).read_text().replace('namespace Shi3ld\\Content\\Model\\Builder;', 'namespace App\\Services\\Builder;')
+    destination = target / name
+    if '--check' in sys.argv:
+        if not destination.exists() or destination.read_text() != text:
+            changed.append(name)
+    else:
+        target.mkdir(parents=True, exist_ok=True)
+        destination.write_text(text)
+if changed:
+    raise SystemExit('Builder runtime differs: ' + ', '.join(changed) + '. Run bin/sync-builder-runtime.')

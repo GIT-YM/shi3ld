@@ -16,9 +16,24 @@ class Site extends AbstractProduct implements IdentityInterface
 {
     private array $catalogueCollections = [];
 
-    public function __construct(Context $context, private CollectionFactory $products, array $data = [])
-    {
+    public function __construct(
+        Context $context,
+        private CollectionFactory $products,
+        private \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categories,
+        array $data = []
+    ) {
         parent::__construct($context, $data);
+    }
+
+    public function getShopCategories(): \Magento\Catalog\Model\ResourceModel\Category\Collection
+    {
+        $store = $this->_storeManager->getStore();
+
+        return $this->categories->create()->setStoreId($store->getId())
+            ->addAttributeToSelect(['name', 'url_key', 'url_path'])
+            ->addAttributeToFilter('parent_id', $store->getRootCategoryId())
+            ->addAttributeToFilter('is_active', 1)
+            ->addAttributeToFilter('include_in_menu', 1)->setOrder('position', 'ASC');
     }
 
     public function getProducts(int $limit = 6, bool $paginate = false): Collection

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Backend\Model\Auth"><plugin name="shi3ld_end_private_preview_on_logout" type="Shi3ld\Content\Plugin\EndPreviewOnLogout"/></type>
+    <!-- Only this session check may answer guests without forwarding them to Admin login. -->
+    <type name="Shi3ld\Content\Controller\Adminhtml\Siteaccess\Frontend">
+        <plugin name="adminAuthentication" disabled="true"/>
+    </type>
+    <type name="Shi3ld\Content\Controller\Adminhtml\Editor\Locate">
+        <plugin name="adminAuthentication" disabled="true"/>
+    </type>
+</config>

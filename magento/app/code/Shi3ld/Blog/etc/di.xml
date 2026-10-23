@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Shi3ld\Content\Model\Builder\Runtime"><arguments><argument name="contextProviders" xsi:type="array"><item name="blog" xsi:type="object">Shi3ld\Blog\Model\BuilderContext</item></argument></arguments></type>
+    <type name="Shi3ld\Blog\Block\Blog"><plugin name="shi3ld_blog_builder_templates" type="Shi3ld\Blog\Plugin\BuilderTemplates"/></type>
+    <type name="Magento\Framework\Console\CommandList"><arguments><argument name="commands" xsi:type="array"><item name="shi3ld_blog_samples" xsi:type="object">Shi3ld\Blog\Console\SeedSampleArticles</item><item name="shi3ld_blog_prepare" xsi:type="object">Shi3ld\Blog\Console\Prepare</item></argument></arguments></type>
+    <type name="Shi3ld\Content\Model\Editor\Entities"><arguments><argument name="providers" xsi:type="array"><item name="article" xsi:type="object">Shi3ld\Blog\Model\ArticleEditor</item><item name="blog_locale" xsi:type="object">Shi3ld\Blog\Model\Editorial\TranslationEditor</item><item name="cat_locale" xsi:type="object">Shi3ld\Blog\Model\Editorial\CategoryLocale</item></argument></arguments><plugin name="shi3ld_blog_editor_settings" type="Shi3ld\Blog\Plugin\EditorConfiguration"/></type>
+    <type name="Shi3ld\Content\Model\Editor\Markup"><arguments><argument name="directiveValidators" xsi:type="array"><item name="shi3ld_blog" xsi:type="object">Shi3ld\Blog\Model\WidgetOptions</item></argument></arguments></type>
+    <type name="Shi3ld\Content\Model\Editor\Documents"><plugin name="shi3ld_blog_publication" type="Shi3ld\Blog\Plugin\PublishedArticle"/><plugin name="shi3ld_blog_editing_leases" type="Shi3ld\Blog\Plugin\EditorialDocuments"/></type>
+    <type name="Shi3ld\Content\Block\EditorToolbar"><plugin name="shi3ld_blog_editor_toolbar" type="Shi3ld\Blog\Plugin\Toolbar"/></type>
+    <type name="Magento\Sitemap\Model\ItemProvider\Composite"><arguments><argument name="itemProviders" xsi:type="array"><item name="shi3ld_blog" xsi:type="object">Shi3ld\Blog\Model\SitemapItems</item></argument></arguments></type>
+</config>

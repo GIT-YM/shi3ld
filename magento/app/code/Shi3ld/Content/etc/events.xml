@@ -1,9 +1,20 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="cms_block_save_commit_after"><observer name="shi3ld_share_website_design" instance="Shi3ld\Content\Observer\ShareWebsiteDesign"/></event>
+    <event name="cms_block_delete_commit_after"><observer name="shi3ld_share_deleted_website_region" instance="Shi3ld\Content\Observer\ShareWebsiteDesign"/></event>
+    <event name="shi3ld_catalogue_transfer_applied">
+        <observer name="shi3ld_refresh_transferred_catalogue_sitemap" instance="Shi3ld\Content\Observer\RefreshTransferredCatalogue"/>
+    </event>
     <event name="catalog_product_save_commit_after">
         <observer name="shi3ld_refresh_catalogue_on_save" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
     </event>
     <event name="catalog_product_delete_commit_after">
         <observer name="shi3ld_refresh_catalogue_on_delete" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
+    </event>
+    <event name="catalog_category_save_commit_after">
+        <observer name="shi3ld_refresh_catalogue_on_category_save" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
+    </event>
+    <event name="catalog_category_delete_commit_after">
+        <observer name="shi3ld_refresh_catalogue_on_category_delete" instance="Shi3ld\Content\Observer\InvalidateCataloguePages"/>
     </event>
 </config>

@@ -1,0 +1,11 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<section class="blog-subscription" data-blog-subscription hidden>
+    <h2>Follow the Shi3ld journal</h2><p>Choose your topics and receive a digest when articles are added or updated.</p>
+    <form data-blog-subscribe><label>Email address<input type="email" name="email" required maxlength="254" autocomplete="email"></label>
+        <fieldset><legend>Topics (leave empty for all articles)</legend><div data-blog-subscription-topics></div></fieldset>
+        <label class="blog-consent"><input type="checkbox" name="consent" value="1" required> I want to receive article digests. I can unsubscribe using the link in each email.</label>
+        <p><a href="/services/privacy">Read the privacy information</a></p><div class="blog-honeypot" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <button class="button" type="submit">Request subscription</button><p data-form-status role="status"></p>
+    </form>
+</section>
+<p class="blog-rss-link"><a href="<?= $block->escapeUrl($block->getUrl('',['_direct'=>'blog/rss','_nosid'=>true])) ?>">Follow articles with RSS ↗</a></p>

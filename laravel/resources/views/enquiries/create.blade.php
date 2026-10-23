@@ -13,6 +13,10 @@
     @include('services.feedback')
     <form class="form-panel quote-form" method="post" action="{{ route('quote.store') }}">
         @csrf
+        @if(!empty($blogAttribution))
+            <input type="hidden" name="blog_ref" value="{{ $blogAttribution['post_id'] }}">
+            <input type="hidden" name="blog_token" value="{{ $blogAttribution['token'] }}">
+        @endif
         <div class="trap" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
         <fieldset><legend><span>01</span> Your cleaning service</legend>
             <div class="field"><label for="service_type">Which service do you need? <span class="required">*</span></label><select id="service_type" name="service_type" required @error('service_type') aria-invalid="true" @enderror><option value="">Choose a service</option>@foreach(['domestic'=>'Domestic cleaning','commercial'=>'Commercial cleaning','care_home'=>'Care-home cleaning'] as $v=>$label)<option value="{{ $v }}" @selected(old('service_type', $selectedService)===$v)>{{ $label }}</option>@endforeach</select></div>

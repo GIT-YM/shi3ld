@@ -13,6 +13,7 @@ if not path.exists():
     path.write_text(text)
     path.chmod(0o600)
 secret = root / '.secrets/composer-auth.json'
+(root / 'magento/var/shi3ld/site-access').mkdir(parents=True, exist_ok=True)
 secret.parent.mkdir(mode=0o700, exist_ok=True)
 if not secret.exists():
     secret.write_text('{}\n')

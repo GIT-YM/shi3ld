@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl><resources><resource id="Magento_Backend::admin"><resource id="Magento_Backend::content"><resource id="Magento_Backend::content_elements">
+        <resource id="Shi3ld_Content::site_access" title="Website Online / Offline" sortOrder="15"/>
+        <resource id="Shi3ld_Content::visual_edit" title="Visual editor: drafts and revisions" sortOrder="10">
+            <resource id="Shi3ld_Content::design" title="Visual editor: layouts, CSS and design library"/>
+            <resource id="Shi3ld_Content::visual_publish" title="Visual editor: publish content"/>
+        </resource>
+    </resource></resource></resource></resources></acl>
+</config>

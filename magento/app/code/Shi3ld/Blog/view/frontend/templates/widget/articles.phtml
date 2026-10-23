@@ -1,0 +1,34 @@
+<?php
+/** @var \Shi3ld\Blog\Block\Widget\Articles $block */
+$articles = $block->articles();
+if (!$articles) { return; }
+$options = $block->options();
+$headingLevel = $options['heading'] === '' ? 2 : 3;
+?>
+<section class="blog-widget background-<?= $block->escapeHtmlAttr($options['background']) ?> spacing-<?= $block->escapeHtmlAttr($options['spacing']) ?>" aria-label="<?= $block->escapeHtmlAttr($options['heading'] ?: 'Articles') ?>">
+    <div class="blog-widget-inner">
+    <?php if ($options['heading'] !== '' || $options['view_all']): ?>
+        <header class="blog-section-heading">
+            <?php if ($options['heading'] !== ''): ?><h2><?= $block->escapeHtml($options['heading']) ?></h2><?php endif; ?>
+            <?php if ($options['view_all']): ?><a class="blog-view-all" href="<?= $block->escapeUrl($block->viewAllUrl()) ?>">View all articles <span aria-hidden="true">↗</span></a><?php endif; ?>
+        </header>
+    <?php endif; ?>
+    <div class="blog-grid design-<?= $block->escapeHtmlAttr($options['design']) ?> layout-<?= $block->escapeHtmlAttr($options['layout']) ?> ratio-<?= $block->escapeHtmlAttr($options['image_ratio']) ?> columns-<?= (int) $options['columns'] ?>" style="--blog-cols:<?= (int) $options['columns'] ?>;--blog-tablet-cols:<?= (int) $options['tablet_columns'] ?>;--blog-mobile-cols:<?= (int) $options['mobile_columns'] ?>">
+        <?php foreach ($articles as $post): ?>
+        <?php if ($custom = $block->customCard($post)): ?><?= /* @noEscape */ $custom ?><?php continue; endif; ?>
+        <article class="blog-card">
+            <?php if ($options['layout'] !== 'text-only'): ?>
+            <a class="blog-card-image" href="<?= $block->escapeUrl($block->urlFor($post)) ?>" tabindex="-1" aria-hidden="true"><img src="<?= $block->escapeUrl($block->image($post)) ?>" srcset="<?= $block->escapeHtmlAttr($block->srcset($post)) ?>" sizes="<?= $block->escapeHtmlAttr($block->imageSizes()) ?>" width="800" height="533" alt="<?= $block->escapeHtmlAttr($post['featured_alt'] ?: $post['title']) ?>" loading="lazy" decoding="async"></a>
+            <?php endif; ?>
+            <div class="blog-card-copy">
+                <?php if ($options['show_category']): ?><div class="blog-categories"><?php foreach ($block->categories($post) as $category): ?><a href="<?= $block->escapeUrl($block->categoryUrl($category)) ?>"><?= $block->escapeHtml($category['title']) ?></a><?php endforeach; ?></div><?php endif; ?>
+                <h<?= $headingLevel ?>><a href="<?= $block->escapeUrl($block->urlFor($post)) ?>"><?= $block->escapeHtml($post['title']) ?></a></h<?= $headingLevel ?>>
+                <?php if ($options['show_date'] || ($options['show_author'] && $post['author'] !== '')): ?><p class="blog-meta"><?php if ($options['show_date']): ?><time datetime="<?= $block->escapeHtmlAttr(gmdate('c', strtotime($post['published_at'].' UTC'))) ?>"><?= $block->escapeHtml(gmdate('j F Y', strtotime($post['published_at'].' UTC'))) ?></time><?php endif; ?><?php if ($options['show_author'] && $post['author'] !== ''): ?><span><?= $block->escapeHtml($post['author']) ?></span><?php endif; ?></p><?php endif; ?>
+                <?php if ($options['show_excerpt'] && $options['excerpt_length'] > 0): ?><p class="blog-excerpt"><?= $block->escapeHtml($block->excerpt($post)) ?></p><?php endif; ?>
+                <?php if ($options['show_read_more']): ?><a class="blog-read-more <?= $options['button_style'] === 'button' ? 'button button-small' : '' ?>" href="<?= $block->escapeUrl($block->urlFor($post)) ?>" aria-label="<?= $block->escapeHtmlAttr(($options['read_more_label'] ?: 'Read more').': '.$post['title']) ?>"><?= $block->escapeHtml($options['read_more_label'] ?: 'Read more') ?> <span aria-hidden="true">↗</span></a><?php endif; ?>
+            </div>
+        </article>
+        <?php endforeach; ?>
+    </div>
+    </div>
+</section>

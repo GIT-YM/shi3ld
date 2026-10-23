@@ -13,6 +13,7 @@ x-magento: &magento
     - ./magento:/workspace/magento
   environment:
     MAGENTO_DB_PASSWORD: ${MAGENTO_DB_PASSWORD:?Run bin/init-env}
+    SHI3LD_ENVIRONMENT: ${SHI3LD_ENVIRONMENT:-}
     MAGENTO_ADMIN_USER: ${MAGENTO_ADMIN_USER:-shi3ld_admin}
     MAGENTO_ADMIN_PASSWORD: ${MAGENTO_ADMIN_PASSWORD:?Run bin/init-env}
     MAGENTO_ADMIN_EMAIL: ${MAGENTO_ADMIN_EMAIL:-admin@example.test}
@@ -33,6 +34,7 @@ x-laravel: &laravel
       LOCAL_GID: ${LOCAL_GID:-1000}
   volumes:
     - ./laravel:/workspace/laravel
+    - ./magento/var/shi3ld/site-access:/workspace/site-access:ro
   environment:
     DB_CONNECTION: mysql
     DB_HOST: db

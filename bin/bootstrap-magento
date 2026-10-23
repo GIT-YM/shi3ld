@@ -32,9 +32,10 @@ if ! docker compose run --rm --no-deps php-magento php -r '$c = is_file("app/etc
       --session-save=valkey --session-save-valkey-host=magento-cache --session-save-valkey-db=2
   '
 fi
-docker compose run --rm php-magento php bin/magento module:enable Shi3ld_Catalog Shi3ld_Content Shi3ld_Integration
+docker compose run --rm php-magento php bin/magento module:enable Shi3ld_Catalog Shi3ld_Content Shi3ld_Integration Shi3ld_Blog
 docker compose run --rm php-magento php bin/magento setup:upgrade
 docker compose run --rm php-magento php bin/magento setup:db-declaration:generate-whitelist --module-name=Shi3ld_Integration
+docker compose run --rm php-magento php bin/magento setup:db-declaration:generate-whitelist --module-name=Shi3ld_Blog
 docker compose run --rm php-magento php bin/magento shi3ld:theme:activate
 docker compose run --rm php-magento php bin/magento deploy:mode:set developer
 docker compose run --rm php-magento php bin/magento indexer:reindex
@@ -42,4 +43,5 @@ docker compose up -d php-magento php-laravel nginx
 docker compose exec -T nginx nginx -s reload
 ./bin/configure-magento-development
 ./bin/configure-development-urls
+docker compose exec -T php-magento php bin/magento media-gallery:sync
 docker compose exec -T php-magento php bin/magento shi3ld:site:sitemaps

@@ -1,0 +1,49 @@
+<?php /** @var \Shi3ld\Content\Block\Adminhtml\SiteAccess $block */ ?>
+<div class="message <?= $block->isOffline() ? 'message-warning' : 'message-success' ?>"><div>
+    <strong><?= $block->isOffline() ? 'The website is offline.' : 'The website is online.' ?></strong>
+    <?= $block->isOffline() ? 'Visitors see the offline message across the shop and cleaning services. Magento Admin remains available.' : 'Everyone can browse the shop and cleaning services.' ?>
+</div></div>
+
+<?php if ($block->canChangeStatus()): ?>
+<form method="post" action="<?= $block->escapeUrl($block->getUrl('*/*/save')) ?>" class="admin__scope-old">
+    <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getPreviewFormKey()) ?>">
+    <fieldset class="admin__fieldset">
+        <div class="admin__field">
+            <label class="admin__field-label" for="site-status"><span>Website status</span></label>
+            <div class="admin__field-control"><select id="site-status" name="status" class="admin__control-select">
+                <option value="online" <?= !$block->isOffline() ? 'selected' : '' ?>>Online — visible to everyone</option>
+                <option value="offline" <?= $block->isOffline() && !$block->redirectsAdministrators() ? 'selected' : '' ?>>Offline — administrator preview only</option>
+                <option value="redirect" <?= $block->redirectsAdministrators() ? 'selected' : '' ?>>Redirect to frontend — signed-in administrators</option>
+            </select><div class="admin__field-note">Redirect to frontend keeps the website offline for visitors. An existing Magento Admin login in the same browser lets you browse the website automatically.</div></div>
+        </div>
+        <div class="admin__field">
+            <label class="admin__field-label" for="offline-message"><span>Visitor message</span></label>
+            <div class="admin__field-control"><textarea id="offline-message" name="message" maxlength="500" rows="3" class="admin__control-textarea"><?= $block->escapeHtml($block->getOfflineMessage()) ?></textarea><div class="admin__field-note">Shown while the website is offline. Plain text, up to 500 characters.</div></div>
+        </div>
+        <div class="admin__field"><div class="admin__field-control"><button type="submit" class="action-primary"><span>Save website status</span></button></div></div>
+    </fieldset>
+</form>
+<?php else: ?>
+<p>Your role can preview the offline website. The Website Online / Offline permission is required to change its status.</p>
+<?php endif; ?>
+
+<?php if ($block->isOffline()): ?>
+<?php if ($block->redirectsAdministrators()): ?>
+<h2>Automatic administrator access</h2>
+<p>Open the website in this browser to view the shop and <strong>/services</strong> automatically using your Magento Admin login. Visitors without an administrator login see the offline message. Automatic access ends when your Admin session expires or you sign out.</p>
+<?php else: ?>
+<h2>Private website preview</h2>
+<p>Use your Magento administrator login to browse the complete website, including <strong>/services</strong>, in this browser. Preview access lasts for one hour and ends when you log out of Magento Admin. Disabled accounts and changed passwords lose preview access.</p>
+<form method="post" action="<?= $block->escapeUrl($block->getUrl('*/*/preview')) ?>" target="_blank">
+    <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getPreviewFormKey()) ?>">
+    <button type="submit" class="action-primary"><span>Open private preview</span></button>
+</form>
+<?php if ($block->isPreviewing()): ?>
+<p>Your browser currently has private preview access.</p>
+<form method="post" action="<?= $block->escapeUrl($block->getUrl('*/*/stop')) ?>">
+    <input type="hidden" name="form_key" value="<?= $block->escapeHtmlAttr($block->getPreviewFormKey()) ?>">
+    <button type="submit"><span>End my private preview</span></button>
+</form>
+<?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>

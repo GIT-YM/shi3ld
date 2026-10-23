@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="standard"><route id="shi3ld_preview" frontName="site-preview"><module name="Shi3ld_Content"/></route><route id="shi3ld_content" frontName="shi3ld_content"><module name="Shi3ld_Content"/></route></router>
+</config>

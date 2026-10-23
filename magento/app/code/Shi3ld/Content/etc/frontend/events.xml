@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd"><event name="layout_generate_blocks_after"><observer name="shi3ld_builder_product_arrangement" instance="Shi3ld\Content\Observer\BuilderProductLayout"/></event></config>
