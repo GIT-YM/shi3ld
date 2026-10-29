@@ -1,0 +1,8 @@
+@extends('services.staff.layout')
+@section('title', 'Review contact message')
+@section('staff-title', 'Review contact message')
+@section('staff-content')
+<p><a href="{{ route('services.staff.contacts') }}">← Back to contact messages</a></p>
+<div class="detail-grid"><article class="form-panel"><p class="eyebrow">CONTACT MESSAGE</p><h2>{{ $contactMessage->subject }}</h2><p class="reference">{{ $contactMessage->reference }}</p><dl class="enquiry-details"><dt>Name</dt><dd>{{ $contactMessage->name }}</dd><dt>Email</dt><dd><a href="mailto:{{ $contactMessage->email }}">{{ $contactMessage->email }}</a></dd><dt>Telephone</dt><dd>{{ $contactMessage->phone ?: 'Not provided' }}</dd><dt>Received</dt><dd>{{ $contactMessage->created_at->format('d M Y, H:i') }}</dd><dt>Privacy acknowledged</dt><dd>{{ $contactMessage->privacy_acknowledged_at->format('d M Y, H:i') }}</dd></dl><h3>Message</h3><p class="preserve-lines">{{ $contactMessage->message }}</p></article>
+<aside><form class="form-panel" method="post" action="{{ route('services.staff.contact.update', $contactMessage) }}">@csrf @method('PATCH')<h2>Follow-up</h2><div class="field"><label for="status">Status</label><select id="status" name="status">@foreach(['new'=>'New','replied'=>'Replied','closed'=>'Closed'] as $key=>$label)<option value="{{ $key }}" @selected(old('status', $contactMessage->status)===$key)>{{ $label }}</option>@endforeach</select></div><div class="field"><label for="staff_notes">Internal notes</label><textarea id="staff_notes" name="staff_notes" rows="8" maxlength="5000">{{ old('staff_notes', $contactMessage->staff_notes) }}</textarea><p class="hint">Visible to authorised services staff only.</p></div><button class="button">Save changes</button></form></aside></div>
+@endsection

@@ -19,6 +19,7 @@
     <title>@yield('title', 'Cleaning for the spaces that matter') | Shi3ld Alliance</title>
     <link rel="stylesheet" href="{{ asset('services/assets/site.css') }}">
     <link rel="stylesheet" href="{{ asset('services/assets/cms.css') }}?v=20261021.3">
+    <link rel="stylesheet" href="{{ asset('services/assets/alliance-brand.css') }}?v=20261029.2">
     <script src="{{ asset('services/assets/site.js') }}" defer></script>
     <link rel="stylesheet" href="{{ asset('services/assets/builder-runtime.css') }}?v=20261024.2">
     {!! app(\App\Services\BuilderRuntime::class)->globalHtml() !!}
@@ -27,9 +28,6 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-@if(config('services_site.sample_content'))
-<div class="preview-bar">Development preview · Sample copy and imagery · Please use sample enquiry details.</div>
-@endif
 @if(!empty($sharedWebsiteDesign['header']))
 {!! $sharedWebsiteDesign['header'] !!}
 @else

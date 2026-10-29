@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head><css src="css/shi3ld-cms.css"/></head>
+    <head><css src="css/shi3ld-cms.css"/><css src="css/shi3ld-home.css"/></head>
     <body>
         <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="shi3ld.header"><arguments><argument name="hide_commerce_tools" xsi:type="boolean">true</argument></arguments></referenceBlock>
         <referenceBlock name="head.additional"><block class="Shi3ld\Content\Block\Canonical" name="shi3ld.cms.canonical" template="Shi3ld_Content::canonical.phtml"/></referenceBlock>
     </body>
 </page>

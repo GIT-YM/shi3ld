@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 theme=magento/app/design/frontend/Shi3ld/Alliance/web
 if [ "${1:-}" = "--check" ]; then
   status=0
-  for entry in "site.css:css/shi3ld-site.css" "cms.css:css/shi3ld-cms.css" "blog.css:css/shi3ld-blog.css" "site.js:js/shi3ld-site.js" "home-sample.jpg:images/home-sample.jpg" "workplace-sample.jpg:images/workplace-sample.jpg" "care-sample.jpg:images/care-sample.jpg"; do
+  for entry in "site.css:css/shi3ld-site.css" "cms.css:css/shi3ld-cms.css" "blog.css:css/shi3ld-blog.css" "alliance-brand.css:css/shi3ld-brand.css" "alliance-home.css:css/shi3ld-home.css" "site.js:js/shi3ld-site.js" "home-sample.jpg:images/home-sample.jpg" "workplace-sample.jpg:images/workplace-sample.jpg" "care-sample.jpg:images/care-sample.jpg"; do
     source=${entry%%:*}
     target=${entry#*:}
     if ! cmp -s "laravel/public/services/assets/$source" "$theme/$target"; then
@@ -12,6 +12,10 @@ if [ "${1:-}" = "--check" ]; then
       status=1
     fi
   done
+  if ! diff -qr laravel/public/services/assets/alliance-home "$theme/images/alliance-home" >/dev/null; then
+    echo "Homepage image assets differ. Run bin/sync-site-assets." >&2
+    status=1
+  fi
   exit "$status"
 fi
 if [ "$#" -ne 0 ]; then
@@ -22,7 +26,11 @@ mkdir -p "$theme/css" "$theme/js" "$theme/images"
 cp laravel/public/services/assets/site.css "$theme/css/shi3ld-site.css"
 cp laravel/public/services/assets/cms.css "$theme/css/shi3ld-cms.css"
 cp laravel/public/services/assets/blog.css "$theme/css/shi3ld-blog.css"
+cp laravel/public/services/assets/alliance-brand.css "$theme/css/shi3ld-brand.css"
+cp laravel/public/services/assets/alliance-home.css "$theme/css/shi3ld-home.css"
 cp laravel/public/services/assets/site.js "$theme/js/shi3ld-site.js"
 cp laravel/public/services/assets/home-sample.jpg "$theme/images/home-sample.jpg"
 cp laravel/public/services/assets/workplace-sample.jpg "$theme/images/workplace-sample.jpg"
 cp laravel/public/services/assets/care-sample.jpg "$theme/images/care-sample.jpg"
+mkdir -p "$theme/images/alliance-home"
+cp laravel/public/services/assets/alliance-home/* "$theme/images/alliance-home/"

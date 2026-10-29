@@ -9,6 +9,9 @@ use Magento\Cms\Model\PageFactory;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
+use Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory;
+use Magento\MediaGalleryApi\Api\GetAssetsByPathsInterface;
+use Magento\MediaGalleryApi\Api\SaveAssetsInterface;
 
 class VisualPages
 {
@@ -19,9 +22,9 @@ class VisualPages
         private BlockRepositoryInterface $blocks,
         private Filesystem $filesystem,
         private WriterInterface $config,
-        private \Magento\MediaGalleryApi\Api\GetAssetsByPathsInterface $mediaAssets,
-        private \Magento\MediaGalleryApi\Api\SaveAssetsInterface $saveMediaAssets,
-        private \Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory $assetFactory
+        private GetAssetsByPathsInterface $mediaAssets,
+        private SaveAssetsInterface $saveMediaAssets,
+        private AssetInterfaceFactory $assetFactory
     ) {}
 
     public function enable(): array
@@ -35,6 +38,7 @@ class VisualPages
                 $legacy = '{{block class="Shi3ld\\Content\\Block\\Site" template="Shi3ld_Content::'.$template.'.phtml"}}';
                 if (trim((string) $page->getContent()) !== $legacy) {
                     $result[] = $identifier.': preserved existing content (already visual or independently edited).';
+
                     continue;
                 }
                 $backup = json_encode($page->getData(), JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
@@ -54,6 +58,7 @@ class VisualPages
         $this->config->save('cms/pagebuilder/enabled', 1);
         $this->config->save('cms/pagebuilder/enable_content_preview', 1);
         $this->config->save('cms/wysiwyg/enabled', 'enabled');
+
         return $result;
     }
 
@@ -63,7 +68,7 @@ class VisualPages
             $this->text($this->copy('shi3ld_home_intro')).$this->buttons([
                 ['Explore the shop ↗', 'shop', 'primary'], ['Find your cleaning plan ↗', 'services', 'link'],
             ]).$this->text('<p>For homes, workplaces and care environments.<br><strong>One connected alliance.</strong></p>', 'shi3ld-pb-note'),
-            $this->image('home-sample.jpg', 'Illustrative welcoming living room with cream sofa, oak table and plants', 'shi3ld-pb-hero-image')
+            $this->image('home-sample.jpg', 'Welcoming living room with cream sofa, oak table and plants', 'shi3ld-pb-hero-image')
                 .$this->text('<p>Your space. Your priorities.<br><strong>More room for everyday living.</strong></p>', 'shi3ld-pb-image-note'),
         ]));
         $values = $this->row('shi3ld-pb-values', $this->text('<p>Accessibility products &nbsp; · &nbsp; Domestic cleaning &nbsp; · &nbsp; Commercial cleaning &nbsp; · &nbsp; Care-home cleaning</p>'));
@@ -75,7 +80,7 @@ class VisualPages
             ['commercial-cleaning', 'Commercial cleaning', 'At work', 'workplace-sample.jpg', 'Discuss a cleaning schedule for offices, retail premises and shared areas, shaped around your site.'],
             ['care-home-cleaning', 'Care-home cleaning', 'In care', 'care-sample.jpg', 'Site-specific cleaning enquiries for communal and resident areas, discussed with your care-home team.'],
         ] as [$slug, $title, $label, $image, $description]) {
-            $cards[] = $this->image($image, 'Illustrative '.$label.' setting')
+            $cards[] = $this->image($image, $label.' setting')
                 .$this->text('<p class="eyebrow">'.$label.'</p><h3>'.$title.'</h3><p>'.$description.'</p>')
                 .$this->buttons([['Explore this service ↗', 'services/'.$slug, 'link']]);
         }
@@ -92,6 +97,7 @@ class VisualPages
             $this->text('<p>Tell us what you need cleaned. We’ll discuss a plan and quotation around your requirements.</p>')
                 .$this->buttons([['Request a cleaning quote ↗', 'services/quote', 'primary']]),
         ]));
+
         return $hero.$values.$products.$services.$about.$cta;
     }
 
@@ -101,7 +107,7 @@ class VisualPages
             $this->text($this->copy('shi3ld_about_copy')).$this->buttons([
                 ['Explore the shop ↗', 'shop', 'primary'], ['Explore cleaning services ↗', 'services', 'link'],
             ]),
-            $this->image('home-sample.jpg', 'Illustrative welcoming living room', 'shi3ld-pb-about-image'),
+            $this->image('home-sample.jpg', 'Welcoming living room', 'shi3ld-pb-about-image'),
         ]));
     }
 
@@ -109,13 +115,14 @@ class VisualPages
     {
         $block = $this->blockFactory->create()->getCollection()
             ->addFieldToFilter('identifier', 'shi3ld_shop_catalogue')->getFirstItem();
-        if (!$block->getId()) {
+        if (! $block->getId()) {
             $block = $this->blockFactory->create()->setIdentifier('shi3ld_shop_catalogue')
                 ->setTitle('Shop live catalogue — automatic products and categories')->setIsActive(true)->setStores([0])
                 ->setContent('{{block class="Shi3ld\\Content\\Block\\Site" template="Shi3ld_Content::catalogue.phtml"}}');
             $block = $this->blocks->save($block);
         }
         $widget = '{{widget type="Magento\\Cms\\Block\\Widget\\Block" template="widget/static_block/default.phtml" block_id="'.$block->getId().'"}}';
+
         return $this->row('shi3ld-pb-shop-intro', $this->text($this->copy('shi3ld_shop_intro')))
             .$this->row('shi3ld-pb-catalogue', '<div data-content-type="block" data-appearance="default" data-element="main">'.$widget.'</div>');
     }
@@ -124,6 +131,7 @@ class VisualPages
     {
         $conditions = ['1' => ['type' => 'Magento\\CatalogWidget\\Model\\Rule\\Condition\\Combine', 'aggregator' => 'all', 'value' => '1', 'new_child' => '']];
         $encoded = str_replace(['{', '}', '"', '\\'], ['^[', '^]', '`', '|'], json_encode($conditions, JSON_THROW_ON_ERROR));
+
         return '<div data-content-type="products" data-appearance="grid" data-element="main">'
             .'{{widget type="Magento\\CatalogWidget\\Block\\Product\\ProductsList" template="Magento_CatalogWidget::product/widget/content/grid.phtml" products_count="4" show_pager="0" sort_order="date_newest_top" condition_option="condition" conditions_encoded="'.$encoded.'"}}'
             .'</div>';
@@ -142,6 +150,7 @@ class VisualPages
         foreach ($contents as $content) {
             $html .= '<div class="pagebuilder-column" data-content-type="column" data-appearance="full-height" data-element="main" style="display:flex;flex-direction:column;align-self:stretch;width:'.(100 / count($contents)).'%">'.$content.'</div>';
         }
+
         return $html.'</div></div>';
     }
 
@@ -153,6 +162,7 @@ class VisualPages
     private function image(string $file, string $alt, string $classes = ''): string
     {
         $src = '{{media url=wysiwyg/shi3ld/'.$file.'}}';
+
         return '<figure data-content-type="image" data-appearance="full-width" data-element="main" class="'.$classes.'">'
             .'<img class="pagebuilder-mobile-hidden" data-element="desktop_image" src="'.$src.'" alt="'.$alt.'" style="max-width:100%;height:auto">'
             .'<img class="pagebuilder-mobile-only" data-element="mobile_image" src="'.$src.'" alt="'.$alt.'" style="max-width:100%;height:auto"></figure>';
@@ -165,6 +175,7 @@ class VisualPages
             $html .= '<div data-content-type="button-item" data-appearance="default" data-element="main">'
                 .'<a class="pagebuilder-button-'.$type.'" href="{{store url=\''.$path.'\'}}" data-link-type="default" data-element="link"><span data-element="link_text">'.$label.'</span></a></div>';
         }
+
         return $html.'</div>';
     }
 
@@ -179,10 +190,10 @@ class VisualPages
         $media = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         foreach (['home-sample.jpg', 'workplace-sample.jpg', 'care-sample.jpg'] as $file) {
             $target = 'wysiwyg/shi3ld/'.$file;
-            if (!$media->isExist($target)) {
+            if (! $media->isExist($target)) {
                 $media->writeFile($target, $source->readFile('app/design/frontend/Shi3ld/Alliance/web/images/'.$file));
             }
-            if (!$this->mediaAssets->execute([$target])) {
+            if (! $this->mediaAssets->execute([$target])) {
                 $contents = $media->readFile($target);
                 $dimensions = getimagesizefromstring($contents);
                 $asset = $this->assetFactory->create([

@@ -33,6 +33,15 @@ class Articles extends Template implements BlockInterface, IdentityInterface
         return $this->normalized ??= $this->settings->normalize($this->getData());
     }
 
+    public function homepageImage(int $position): string
+    {
+        $images = ['white-laundry-basket-filled-various-cleaning-supplies-web-medium.webp',
+            'flat-lay-cleaning-supplies-turquoise-background-web-medium.webp',
+            'flat-lay-various-cleaning-supplies-blue-web-medium.webp'];
+
+        return '/services/assets/alliance-home/'.$images[$position % count($images)];
+    }
+
     public function configurePublic(array $input): self
     {
         $this->setData($this->settings->normalize($input));
@@ -84,11 +93,21 @@ class Articles extends Template implements BlockInterface, IdentityInterface
 
     public function image(array $post): string
     {
+        if ($this->options()['presentation'] === 'homepage') {
+            $position = array_search((int) $post['post_id'], array_map(fn (array $article): int => (int) $article['post_id'], $this->articles()), true);
+
+            return $this->homepageImage($position === false ? 0 : $position);
+        }
+
         return $this->presentation->image($post['featured_image'], 800);
     }
 
     public function srcset(array $post): string
     {
+        if ($this->options()['presentation'] === 'homepage') {
+            return $this->image($post).' 1200w';
+        }
+
         return $this->presentation->srcset($post['featured_image']);
     }
 

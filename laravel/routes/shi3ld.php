@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BuilderFormController;
 use App\Http\Controllers\BuilderLibraryController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\ServiceEnquiryController;
 use App\Http\Controllers\ServicesAdminController;
 use App\Http\Controllers\ServicesPageController;
@@ -18,6 +19,7 @@ Route::prefix('services')->group(function (): void {
     Route::get('/editor/locate', [VisualContentController::class, 'locate'])->name('services.visual.locate');
     Route::get('/', [ServicesPageController::class, 'home'])->name('services.home');
     Route::get('/sitemap.xml', [ServicesPageController::class, 'sitemap'])->name('services.sitemap');
+    Route::post('/contact', [ContactMessageController::class, 'store'])->middleware('throttle:5,1')->name('services.contact.submit');
     Route::get('/about', fn () => redirect(config('shi3ld.about_url'), 301))->name('services.about');
     foreach (['how-it-works', 'areas', 'faqs', 'contact', 'privacy', 'cookies', 'terms', 'gallery'] as $page) {
         Route::get('/'.$page, [ServicesPageController::class, 'information'])->defaults('page', $page)->name('services.'.$page);
@@ -38,6 +40,9 @@ Route::prefix('services')->group(function (): void {
         Route::get('/export', [ServicesAdminController::class, 'export'])->middleware('throttle:10,1')->name('services.staff.export');
         Route::get('/enquiries/{enquiry}', [ServicesAdminController::class, 'show'])->name('services.staff.enquiry');
         Route::patch('/enquiries/{enquiry}', [ServicesAdminController::class, 'update'])->name('services.staff.update');
+        Route::get('/contacts', [ContactMessageController::class, 'index'])->name('services.staff.contacts');
+        Route::get('/contacts/{contactMessage}', [ContactMessageController::class, 'show'])->name('services.staff.contact');
+        Route::patch('/contacts/{contactMessage}', [ContactMessageController::class, 'update'])->name('services.staff.contact.update');
         Route::get('/content', [ServicesAdminController::class, 'content'])->name('services.staff.content');
         Route::get('/content/{page}/edit', [ServicesAdminController::class, 'editContent'])->name('services.staff.content.edit');
         Route::patch('/content/{page}', [ServicesAdminController::class, 'updateContent'])->name('services.staff.content.update');

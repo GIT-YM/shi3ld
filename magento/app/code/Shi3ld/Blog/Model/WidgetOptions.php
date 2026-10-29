@@ -22,6 +22,7 @@ class WidgetOptions implements EditorDirectiveInterface
 
         return [
             $text('heading', 'Section heading', 'Advice & resources', 150),
+            $select('presentation', 'Card presentation', 'default', ['default' => 'Standard article cards', 'homepage' => 'Alliance homepage editorial cards']),
             ['name' => 'card_template', 'label' => 'Custom card design', 'type' => 'select', 'default' => '', 'options' => ['' => 'Theme card layout'] + array_column(array_map(fn ($row) => ['value' => $row['asset_key'], 'label' => $row['title']], array_filter($this->designs->all(true), fn ($row) => $row['kind'] === 'card')), 'label', 'value')],
             ['name' => 'categories', 'label' => 'Categories (any selected category; none means all)', 'type' => 'multiselect', 'default' => '',
                 'options' => array_map(fn ($row) => ['value' => (string) $row['category_id'], 'label' => $row['title'].($row['is_active'] ? '' : ' (hidden)')], $this->posts->categories(false))],

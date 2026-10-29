@@ -22,11 +22,13 @@ class BuilderDocuments
         return $payload;
     }
 
-    public function afterPublish(Entities $subject, mixed $result, string $type, int $id, array $payload): void
+    public function afterPublish(Entities|Documents $subject, mixed $result, string $type, int $id, mixed $payload): mixed
     {
-        if ($type !== 'asset' && isset($payload['builder'])) {
+        if ($subject instanceof Entities && $type !== 'asset' && isset($payload['builder'])) {
             $this->state->save($type, $id, $this->schema->settings($payload['builder']));
         }
+
+        return $result;
     }
 
     public function afterValidate(Documents $subject, array $result, array $payload, string $baseline, bool $render = false, string $type = 'page'): array

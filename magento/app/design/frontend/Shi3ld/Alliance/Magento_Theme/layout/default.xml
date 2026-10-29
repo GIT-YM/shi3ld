@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head><css src="css/shi3ld-site.css"/><css src="css/shi3ld-cms.css"/></head>
+    <head><css src="css/shi3ld-site.css"/><css src="css/shi3ld-cms.css"/><css src="css/shi3ld-brand.css"/></head>
     <body>
         <referenceContainer name="header.container">
             <block class="Magento\Framework\View\Element\Template" name="shi3ld.header" template="Shi3ld_Content::header.phtml"/>

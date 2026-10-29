@@ -3,6 +3,7 @@
 namespace Shi3ld\Catalog\Console;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\Product;
@@ -55,11 +56,13 @@ class SeedSampleProducts extends Command
     {
         if ($this->state->getMode() !== State::MODE_DEVELOPER) {
             $output->writeln('<error>Sample catalogue seeding is available in developer mode only.</error>');
+
             return Command::FAILURE;
         }
         $this->state->emulateAreaCode(Area::AREA_ADMINHTML, function () use ($output): void {
             $this->seed($output);
         });
+
         return Command::SUCCESS;
     }
 
@@ -71,7 +74,7 @@ class SeedSampleProducts extends Command
         $website = (int) $store->getWebsiteId();
         $attributeSet = (int) $this->eav->getEntityType(Product::ENTITY)->getDefaultAttributeSetId();
         $setup = $this->setup->create();
-        if (!$this->eav->getAttribute(Product::ENTITY, 'size')->getId()) {
+        if (! $this->eav->getAttribute(Product::ENTITY, 'size')->getId()) {
             $setup->addAttribute(Product::ENTITY, 'size', [
                 'type' => 'int', 'label' => 'Size', 'input' => 'select',
                 'global' => 1, 'required' => false, 'user_defined' => true,
@@ -81,7 +84,7 @@ class SeedSampleProducts extends Command
         }
         foreach (['size', 'color'] as $code) {
             $attribute = $this->eav->getAttribute(Product::ENTITY, $code);
-            if (!$attribute->getId() || $attribute->getFrontendInput() !== 'select' || (int) $attribute->getIsGlobal() !== 1) {
+            if (! $attribute->getId() || $attribute->getFrontendInput() !== 'select' || (int) $attribute->getIsGlobal() !== 1) {
                 throw new \RuntimeException('Expected a global dropdown attribute: '.$code);
             }
             $setup->addAttributeToSet(Product::ENTITY, $attributeSet, 'General', (int) $attribute->getId());
@@ -91,12 +94,13 @@ class SeedSampleProducts extends Command
         $categoryIds = [];
         $stock = [];
         foreach ($samples as $sample) {
-            if (!isset($categoryIds[$sample['category']])) {
+            if (! isset($categoryIds[$sample['category']])) {
                 $categoryIds[$sample['category']] = $this->category($sample['category'], $root);
             }
             $sku = 'SHI3LD-SAMPLE-'.strtoupper($sample['key']);
             if ($this->find($sku)) {
                 $output->writeln('Preserved existing sample: '.$sku);
+
                 continue;
             }
             $children = [];
@@ -104,15 +108,15 @@ class SeedSampleProducts extends Command
                 foreach ($sample['colours'] as $colour) {
                     $childSku = $sku.'-'.strtoupper($this->slug($size)).'-'.strtoupper($this->slug($colour));
                     $child = $this->find($childSku);
-                    if (!$child) {
+                    if (! $child) {
                         $child = $this->productFactory->create()->setStoreId(0)
                             ->setSku($childSku)->setTypeId('simple')->setAttributeSetId($attributeSet)
-                            ->setName('Sample — '.$sample['name'].' — '.$size.' / '.$colour)
+                            ->setName($sample['name'].' — '.$size.' / '.$colour)
                             ->setWebsiteIds([$website])->setStatus(1)->setVisibility(1)
                             ->setPrice($sample['price'] + $sizeIndex * 5)->setWeight($sample['weight'])
                             ->setTaxClassId(0)->setData('color', $colours[strtolower($colour)])
                             ->setData('size', $sizes[strtolower($size)])
-                            ->setDescription('Development sample with illustrative size, colour and pricing.')
+                            ->setDescription('Choose your preferred size and colour from the available options.')
                             ->setStockData(['qty' => 25, 'is_in_stock' => 1]);
                         $child = $this->products->save($child);
                         $sourceItem = $this->sourceItemFactory->create();
@@ -127,12 +131,12 @@ class SeedSampleProducts extends Command
             }
             $parent = $this->productFactory->create()->setStoreId(0)
                 ->setSku($sku)->setTypeId('configurable')->setAttributeSetId($attributeSet)
-                ->setName('Sample — '.$sample['name'])->setWebsiteIds([$website])
+                ->setName($sample['name'])->setWebsiteIds([$website])
                 ->setStatus(1)->setVisibility(4)->setCategoryIds([$categoryIds[$sample['category']]])
                 ->setUrlKey('sample-'.$sample['key'])->setTaxClassId(0)
-                ->setDescription('<p>Development sample product with illustrative sizes, colours and prices.</p><p>Select a size and colour to preview Magento configurable product options.</p>')
-                ->setShortDescription('Sample catalogue item. Available in three sizes and two colours.')
-                ->setData('shi3ld_lead_time', 'Sample data')
+                ->setDescription('<p>Select a size and colour to view the available product options.</p><p>Review the product details before ordering.</p>')
+                ->setShortDescription('Available in three sizes and two colours.')
+                ->setData('shi3ld_lead_time', '')
                 ->setStockData(['use_config_manage_stock' => 0, 'manage_stock' => 0, 'is_in_stock' => 1]);
             $options = [];
             foreach (['size' => $sizes, 'color' => $colours] as $position => $values) {
@@ -173,20 +177,21 @@ class SeedSampleProducts extends Command
             $existing[strtolower($option->getLabel())] = (int) $option->getValue();
         }
         foreach (array_unique($labels) as $label) {
-            if (!isset($existing[strtolower($label)])) {
+            if (! isset($existing[strtolower($label)])) {
                 $option = $this->attributeOptionFactory->create()->setLabel($label)->setSortOrder(0)->setIsDefault(false);
                 $optionId = $this->attributeOptions->add($entity, $code, $option);
                 $this->eav->clear();
                 $existing[strtolower($label)] = (int) $optionId;
             }
         }
+
         return $existing;
     }
 
-    private function category(string $label, \Magento\Catalog\Api\Data\CategoryInterface $root): int
+    private function category(string $label, CategoryInterface $root): int
     {
-        $name = 'Sample — '.$label;
-        $category = $this->categories->create()->setStoreId(0)->addAttributeToFilter('name', $name)
+        $name = $label;
+        $category = $this->categories->create()->setStoreId(0)->addAttributeToFilter('url_key', 'sample-'.$this->slug($label))
             ->addAttributeToFilter('parent_id', $root->getId())->getFirstItem();
         if ($category->getId()) {
             return (int) $category->getId();
@@ -194,7 +199,8 @@ class SeedSampleProducts extends Command
         $category = $this->categoryFactory->create()->setStoreId(0)->setName($name)
             ->setParentId($root->getId())->setPath($root->getPath())->setIsActive(true)
             ->setIncludeInMenu(true)->setUrlKey('sample-'.$this->slug($label))
-            ->setDescription('Development sample catalogue: '.$label.'.');
+            ->setDescription('Explore '.$label.'.');
+
         return (int) $this->categoryRepository->save($category)->getId();
     }
 

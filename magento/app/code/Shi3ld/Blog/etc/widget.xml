@@ -4,6 +4,7 @@
         <label translate="true">Shi3ld Blog Articles</label>
         <description translate="true">Published blog articles with category filters and responsive layouts.</description>
         <parameters>
+            <parameter name="presentation" xsi:type="select" visible="true" required="false" sort_order="12"><label translate="true">Card presentation</label><options><option name="standard" value="default" selected="true"><label translate="true">Standard article cards</label></option><option name="homepage" value="homepage"><label translate="true">Alliance homepage editorial cards</label></option></options></parameter>
             <parameter name="card_template" xsi:type="select" visible="true" required="false" sort_order="15" source_model="Shi3ld\Blog\Model\CardOptions"><label translate="true">Custom article card design</label></parameter>
             <parameter name="heading" xsi:type="text" visible="true" required="false" sort_order="10">
                 <label translate="true">Section heading</label>

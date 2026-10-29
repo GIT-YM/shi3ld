@@ -3,7 +3,7 @@
 $articles = $block->articles();
 if (!$articles) { return; }
 $options = $block->options();
-$headingLevel = $options['heading'] === '' ? 2 : 3;
+$headingLevel = $options['presentation'] === 'homepage' || $options['heading'] !== '' ? 3 : 2;
 ?>
 <section class="blog-widget background-<?= $block->escapeHtmlAttr($options['background']) ?> spacing-<?= $block->escapeHtmlAttr($options['spacing']) ?>" aria-label="<?= $block->escapeHtmlAttr($options['heading'] ?: 'Articles') ?>">
     <div class="blog-widget-inner">

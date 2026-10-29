@@ -175,13 +175,34 @@ After seeding, reindex Magento, run `shi3ld:site:sitemaps` and clean `config eav
 
 ## Visual CMS editing
 
-Magento Page Builder is enabled for native CMS pages. Open **Content → Shi3ld Website Pages**, select a page, expand **Content** and click **Edit with Page Builder**. The homepage contains six independent rows; drag them to reorder sections. Text, images and buttons are native editable elements, and columns can be resized. Images are in the Media Gallery under `wysiwyg/shi3ld` and can be replaced or uploaded through the image editor. You can also use **Content → Pages → Add New Page** for additional CMS pages.
+Magento Page Builder is enabled for native CMS pages. Open **Content → Shi3ld Website Pages**, select a page, expand **Content** and click **Edit with Page Builder**. Homepage sections are stored as independent rows; drag them to reorder sections. The supplied reference design uses an HTML Code element within each row and remains editable through the frontend visual editor. Images are in the Media Gallery under `wysiwyg/shi3ld` and can be replaced or uploaded through the image editor. You can also use **Content → Pages → Add New Page** for additional CMS pages.
 
 The homepage product section is Magento's live Products widget, styled by the theme. Its product selection/count can be changed in Page Builder. The shop's live catalogue is a reusable block tile; move it within the page, but keep the tile to retain automatic catalogue/category rendering. Product records are edited under **Catalog → Products** and categories under **Catalog → Categories**. Header/footer content is managed in shared CMS blocks through the frontend editor. Laravel service pages have a matching editor in their staff area.
 
 Use **Close Full Screen** (the exit icon at the top of the canvas), then **Save** to publish directly from native Page Builder. Its mobile viewport helps inspect responsive content. CMS saves invalidate Magento's page cache. SEO titles and descriptions remain available in each page's **Search Engine Optimization** section. The Shi3ld frontend editor below adds separate drafts, revision history and scheduled publication.
 
 The `EnableVisualPages` Magento data patch performs the conversion once and preserves existing page titles, URLs and metadata. It only converts the original Shi3ld template directives; other page content is left intact. Pre-conversion page JSON is kept in ignored `magento/var/shi3ld/cms-backups/`, with a private database snapshot in `backups/` on this server. Re-running upgrades does not reset visual edits.
+
+### Supplied homepage design — 29 October 2026
+
+The existing `Shi3ld/Alliance` Luma child theme now implements the supplied `shi3ld.png` layout: photographic hero, two route cards, six cleaning services, team/benefits, three-step process, standards, accessibility products, service approach cards, live advice cards, quote banner and shared header/footer. The 12 original WebP files from `shi3ld-pix.zip` are stored unchanged under `laravel/public/services/assets/alliance-home/` and distributed to the theme by `bin/sync-site-assets`. A local SVG house illustration fills the blue-house image position because that photograph was not included in the archive. The service approach cards use neutral business copy; business standards use enquiry wording rather than asserting unverified credentials.
+
+Editable CMS source fragments live in `magento/app/design/frontend/Shi3ld/Alliance/content/`. Shared chrome styles are in `alliance-brand.css`; homepage-only styles are in `alliance-home.css`. The article widget's **Card presentation → Alliance homepage editorial cards** uses the supplied illustrative photos with actual published article titles, categories and URLs, while retaining its existing count/filter/order controls. Article featured images and article records are unchanged.
+
+After deploying the code and compiling Magento's dependency configuration, preview/apply the CMS update explicitly:
+
+```bash
+./bin/sync-site-assets
+docker compose exec -T php-magento php bin/magento shi3ld:cms:apply-home-design
+docker compose exec -T php-magento php bin/magento shi3ld:cms:apply-home-design --apply
+docker compose exec -T php-magento php bin/magento setup:static-content:deploy -f --area frontend --theme Shi3ld/Alliance en_GB en_US
+docker compose exec -T php-magento php bin/magento cache:clean config layout block_html full_page reflection
+docker compose exec -T php-laravel php artisan view:cache --no-interaction
+```
+
+The preview command does not change content. Apply replaces the existing `shi3ld-home`, `shi3ld_global_header` and `shi3ld_global_footer` content through the normal CMS draft/revision workflow, preserving metadata except the homepage SEO title/description and clearing the homepage's previous per-page design settings. Current live content, drafts and revisions are backed up privately in `magento/var/shi3ld/cms-backups/homepage-design-*.json` before publication. Images are registered in the Media Gallery under `wysiwyg/shi3ld/alliance-home`. The shared header/footer are exported to Laravel; other pages' main content and the website offline setting are preserved. Running apply again when the published source already matches leaves drafts/content unchanged.
+
+Public development-preview banners and sample labels have been removed from page copy, gallery captions, article titles and catalogue display fields. Placeholder customer endorsements were replaced with neutral service information. Existing blog/product URLs and catalogue SKUs are preserved, including the identifiers used to prevent development catalogue records from being promoted to production.
 
 ### Frontend visual editor
 
